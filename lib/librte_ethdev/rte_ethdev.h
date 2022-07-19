@@ -481,6 +481,39 @@ struct rte_eth_rss_conf {
 #define RTE_ETH_FLOW_VXLAN_GPE          22 /**< VXLAN-GPE protocol based flow */
 #define RTE_ETH_FLOW_MAX                23
 
+#define RTE_ETH_RSS_IPV4               RTE_BIT64(2)
+#define RTE_ETH_RSS_FRAG_IPV4          RTE_BIT64(3)
+#define RTE_ETH_RSS_NONFRAG_IPV4_TCP   RTE_BIT64(4)
+#define RTE_ETH_RSS_NONFRAG_IPV4_UDP   RTE_BIT64(5)
+#define RTE_ETH_RSS_NONFRAG_IPV4_SCTP  RTE_BIT64(6)
+#define RTE_ETH_RSS_NONFRAG_IPV4_OTHER RTE_BIT64(7)
+#define RTE_ETH_RSS_IPV6               RTE_BIT64(8)
+#define RTE_ETH_RSS_FRAG_IPV6          RTE_BIT64(9)
+#define RTE_ETH_RSS_NONFRAG_IPV6_TCP   RTE_BIT64(10)
+#define RTE_ETH_RSS_NONFRAG_IPV6_UDP   RTE_BIT64(11)
+#define RTE_ETH_RSS_NONFRAG_IPV6_SCTP  RTE_BIT64(12)
+#define RTE_ETH_RSS_NONFRAG_IPV6_OTHER RTE_BIT64(13)
+#define RTE_ETH_RSS_L2_PAYLOAD         RTE_BIT64(14)
+#define RTE_ETH_RSS_IPV6_EX            RTE_BIT64(15)
+#define RTE_ETH_RSS_IPV6_TCP_EX        RTE_BIT64(16)
+#define RTE_ETH_RSS_IPV6_UDP_EX        RTE_BIT64(17)
+#define RTE_ETH_RSS_PORT               RTE_BIT64(18)
+#define RTE_ETH_RSS_VXLAN              RTE_BIT64(19)
+#define RTE_ETH_RSS_GENEVE             RTE_BIT64(20)
+#define RTE_ETH_RSS_NVGRE              RTE_BIT64(21)
+#define RTE_ETH_RSS_GTPU               RTE_BIT64(23)
+#define RTE_ETH_RSS_ETH                RTE_BIT64(24)
+#define RTE_ETH_RSS_S_VLAN             RTE_BIT64(25)
+#define RTE_ETH_RSS_C_VLAN             RTE_BIT64(26)
+#define RTE_ETH_RSS_ESP                RTE_BIT64(27)
+#define RTE_ETH_RSS_AH                 RTE_BIT64(28)
+#define RTE_ETH_RSS_L2TPV3             RTE_BIT64(29)
+#define RTE_ETH_RSS_PFCP               RTE_BIT64(30)
+#define RTE_ETH_RSS_PPPOE              RTE_BIT64(31)
+#define RTE_ETH_RSS_ECPRI              RTE_BIT64(32)
+#define RTE_ETH_RSS_MPLS               RTE_BIT64(33)
+#define RTE_ETH_RSS_IPV4_CHKSUM        RTE_BIT64(34)
+
 /*
  * The RSS offload types are defined based on flow types.
  * Different NIC hardware may support different RSS offload
