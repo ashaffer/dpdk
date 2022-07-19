@@ -3097,7 +3097,7 @@ int ena_com_get_hash_key(struct ena_com_dev *ena_dev, u8 *key)
 
 	if (key)
 		memcpy(key, hash_key->key,
-		       (size_t)(hash_key->key_parts) * sizeof(hash_key->key[0]));
+		       (size_t)(hash_key->keys_num) * sizeof(hash_key->key[0]));
 
 	return 0;
 }
