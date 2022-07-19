@@ -2999,7 +2999,9 @@ rte_eth_dev_rss_hash_conf_get(uint16_t port_id,
 
 	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, -ENODEV);
 	dev = &rte_eth_devices[port_id];
+	printf("support check: 0x%lx\n", (unsigned long)dev->dev_ops->rss_hash_conf_get);
 	RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->rss_hash_conf_get, -ENOTSUP);
+	printf("support check passed\n");
 	return eth_err(port_id, (*dev->dev_ops->rss_hash_conf_get)(dev,
 								   rss_conf));
 }
