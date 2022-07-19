@@ -250,6 +250,8 @@ static int ena_xstats_get_by_id(struct rte_eth_dev *dev,
 				const uint64_t *ids,
 				uint64_t *values,
 				unsigned int n);
+static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
+			  struct rte_eth_rss_conf *rss_conf);
 
 static const struct eth_dev_ops ena_dev_ops = {
 	.dev_configure        = ena_dev_configure,
@@ -270,6 +272,7 @@ static const struct eth_dev_ops ena_dev_ops = {
 	.dev_reset            = ena_dev_reset,
 	.reta_update          = ena_rss_reta_update,
 	.reta_query           = ena_rss_reta_query,
+	.rss_hash_conf_get    = ena_rss_hash_conf_get,
 };
 
 #define NUMA_NO_NODE	SOCKET_ID_ANY
@@ -2714,3 +2717,62 @@ static struct ena_aenq_handlers aenq_handlers = {
 	},
 	.unimplemented_handler = unimplemented_aenq_handler
 };
+
+static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
+			  struct rte_eth_rss_conf *rss_conf)
+{
+	struct ena_adapter *adapter = dev->data->dev_private;
+	struct ena_com_dev *ena_dev = &adapter->ena_dev;
+	enum ena_admin_flow_hash_proto proto;
+	uint64_t rss_hf = 0;
+	int rc, i;
+	uint16_t admin_hf;
+	static bool warn_once;
+
+	if (!(dev->data->dev_conf.rxmode.offloads & RTE_ETH_RX_OFFLOAD_RSS_HASH)) {
+		PMD_DRV_LOG(ERR, "RSS was not configured for the PMD\n");
+		return -ENOTSUP;
+	}
+
+	if (rss_conf->rss_key != NULL) {
+		rc = ena_get_rss_hash_key(ena_dev, rss_conf->rss_key);
+		if (unlikely(rc != 0)) {
+			PMD_DRV_LOG(ERR,
+				"Cannot retrieve RSS hash key, err: %d\n",
+				rc);
+			return rc;
+		}
+	}
+
+	for (i = 0; i < ENA_ADMIN_RSS_PROTO_NUM; ++i) {
+		proto = (enum ena_admin_flow_hash_proto)i;
+		rte_spinlock_lock(&adapter->admin_lock);
+		rc = ena_com_get_hash_ctrl(ena_dev, proto, &admin_hf);
+		rte_spinlock_unlock(&adapter->admin_lock);
+		if (rc == ENA_COM_UNSUPPORTED) {
+			/* As some devices may support only reading rss hash
+			 * key and not the hash ctrl, we want to notify the
+			 * caller that this feature is only partially supported
+			 * and do not return an error - the caller could be
+			 * interested only in the key value.
+			 */
+			if (!warn_once) {
+				PMD_DRV_LOG(WARNING,
+					"Reading hash control from the device is not supported. .rss_hf will contain a default value.\n");
+				warn_once = true;
+			}
+			rss_hf = ENA_ALL_RSS_HF;
+			break;
+		} else if (rc != 0) {
+			PMD_DRV_LOG(ERR,
+				"Failed to retrieve hash ctrl for proto: %d with err: %d\n",
+				i, rc);
+			return rc;
+		}
+
+		rss_hf |= ena_admin_hf_to_eth_hf(proto, admin_hf);
+	}
+
+	rss_conf->rss_hf = rss_hf;
+	return 0;
+}
