@@ -250,6 +250,8 @@ static int ena_xstats_get_by_id(struct rte_eth_dev *dev,
 				const uint64_t *ids,
 				uint64_t *values,
 				unsigned int n);
+static uint64_t ena_admin_hf_to_eth_hf(enum ena_admin_flow_hash_proto proto,
+				       uint16_t field);
 static void ena_reorder_rss_hash_key(uint8_t *reordered_key,
 		     uint8_t *key,
 		     size_t key_size);
@@ -2722,6 +2724,79 @@ static struct ena_aenq_handlers aenq_handlers = {
 	},
 	.unimplemented_handler = unimplemented_aenq_handler
 };
+
+static uint64_t ena_admin_hf_to_eth_hf(enum ena_admin_flow_hash_proto proto,
+				       uint16_t fields)
+{
+	uint64_t rss_hf = 0;
+
+	/* If no fields are activated, then RSS is disabled for this proto */
+	if ((fields & ENA_HF_RSS_ALL_L2_L3_L4) == 0)
+		return 0;
+
+	/* Convert proto to ETH flag */
+	switch (proto) {
+	case ENA_ADMIN_RSS_TCP4:
+		rss_hf |= RTE_ETH_RSS_NONFRAG_IPV4_TCP;
+		break;
+	case ENA_ADMIN_RSS_UDP4:
+		rss_hf |= RTE_ETH_RSS_NONFRAG_IPV4_UDP;
+		break;
+	case ENA_ADMIN_RSS_TCP6:
+		rss_hf |= RTE_ETH_RSS_NONFRAG_IPV6_TCP;
+		break;
+	case ENA_ADMIN_RSS_UDP6:
+		rss_hf |= RTE_ETH_RSS_NONFRAG_IPV6_UDP;
+		break;
+	case ENA_ADMIN_RSS_IP4:
+		rss_hf |= RTE_ETH_RSS_IPV4;
+		break;
+	case ENA_ADMIN_RSS_IP6:
+		rss_hf |= RTE_ETH_RSS_IPV6;
+		break;
+	case ENA_ADMIN_RSS_IP4_FRAG:
+		rss_hf |= RTE_ETH_RSS_FRAG_IPV4;
+		break;
+	case ENA_ADMIN_RSS_NOT_IP:
+		rss_hf |= RTE_ETH_RSS_L2_PAYLOAD;
+		break;
+	case ENA_ADMIN_RSS_TCP6_EX:
+		rss_hf |= RTE_ETH_RSS_IPV6_TCP_EX;
+		break;
+	case ENA_ADMIN_RSS_IP6_EX:
+		rss_hf |= RTE_ETH_RSS_IPV6_EX;
+		break;
+	default:
+		break;
+	};
+
+	/* Check if only DA or SA is being used for L3. */
+	switch (fields & ENA_HF_RSS_ALL_L3) {
+	case ENA_ADMIN_RSS_L3_SA:
+		rss_hf |= RTE_ETH_RSS_L3_SRC_ONLY;
+		break;
+	case ENA_ADMIN_RSS_L3_DA:
+		rss_hf |= RTE_ETH_RSS_L3_DST_ONLY;
+		break;
+	default:
+		break;
+	};
+
+	/* Check if only DA or SA is being used for L4. */
+	switch (fields & ENA_HF_RSS_ALL_L4) {
+	case ENA_ADMIN_RSS_L4_SP:
+		rss_hf |= RTE_ETH_RSS_L4_SRC_ONLY;
+		break;
+	case ENA_ADMIN_RSS_L4_DP:
+		rss_hf |= RTE_ETH_RSS_L4_DST_ONLY;
+		break;
+	default:
+		break;
+	};
+
+	return rss_hf;
+}
+
 
 /* ENA HW interprets the RSS key in reverse bytes order. Because of that, the
  * key must be processed upon interaction with ena_com layer.

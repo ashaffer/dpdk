@@ -481,6 +481,7 @@ struct rte_eth_rss_conf {
 #define RTE_ETH_FLOW_VXLAN_GPE          22 /**< VXLAN-GPE protocol based flow */
 #define RTE_ETH_FLOW_MAX                23
 
+#define RTE_BIT64(nr) (UINT64_C(1) << (nr))
 #define RTE_ETH_RSS_IPV4               RTE_BIT64(2)
 #define RTE_ETH_RSS_FRAG_IPV4          RTE_BIT64(3)
 #define RTE_ETH_RSS_NONFRAG_IPV4_TCP   RTE_BIT64(4)
