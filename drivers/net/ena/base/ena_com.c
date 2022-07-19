@@ -3089,3 +3089,16 @@ int ena_com_config_dev_mode(struct ena_com_dev *ena_dev,
 
 	return 0;
 }
+
+int ena_com_get_hash_key(struct ena_com_dev *ena_dev, u8 *key)
+{
+	struct ena_admin_feature_rss_flow_hash_control *hash_key =
+		ena_dev->rss.hash_key;
+
+	if (key)
+		memcpy(key, hash_key->key,
+		       (size_t)(hash_key->key_parts) * sizeof(hash_key->key[0]));
+
+	return 0;
+}
+

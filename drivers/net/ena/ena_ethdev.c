@@ -250,8 +250,13 @@ static int ena_xstats_get_by_id(struct rte_eth_dev *dev,
 				const uint64_t *ids,
 				uint64_t *values,
 				unsigned int n);
+static void ena_reorder_rss_hash_key(uint8_t *reordered_key,
+		     uint8_t *key,
+		     size_t key_size);
 static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
 			  struct rte_eth_rss_conf *rss_conf);
+static int ena_get_rss_hash_key(struct ena_com_dev *ena_dev, uint8_t *rss_key);
+
 
 static const struct eth_dev_ops ena_dev_ops = {
 	.dev_configure        = ena_dev_configure,
@@ -2718,6 +2723,42 @@ static struct ena_aenq_handlers aenq_handlers = {
 	.unimplemented_handler = unimplemented_aenq_handler
 };
 
+/* ENA HW interprets the RSS key in reverse bytes order. Because of that, the
+ * key must be processed upon interaction with ena_com layer.
+ */
+static void ena_reorder_rss_hash_key(uint8_t *reordered_key,
+				     uint8_t *key,
+				     size_t key_size)
+{
+	size_t i, rev_i;
+
+	for (i = 0, rev_i = key_size - 1; i < key_size; ++i, --rev_i)
+		reordered_key[i] = key[rev_i];
+}
+
+static int ena_get_rss_hash_key(struct ena_com_dev *ena_dev, uint8_t *rss_key)
+{
+	uint8_t hw_rss_key[ENA_HASH_KEY_SIZE];
+	int rc;
+
+	/* The default RSS hash key cannot be retrieved from the HW. Unless it's
+	 * explicitly set, this operation shouldn't be supported.
+	 */
+	if (ena_dev->rss.hash_key == NULL) {
+		PMD_DRV_LOG(WARNING,
+			"Retrieving default RSS hash key is not supported\n");
+		return -ENOTSUP;
+	}
+
+	rc = ena_com_get_hash_key(ena_dev, hw_rss_key);
+	if (rc != 0)
+		return rc;
+
+	ena_reorder_rss_hash_key(rss_key, hw_rss_key, ENA_HASH_KEY_SIZE);
+
+	return 0;
+}
+
 static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
 			  struct rte_eth_rss_conf *rss_conf)
 {
@@ -2729,10 +2770,10 @@ static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
 	uint16_t admin_hf;
 	static bool warn_once;
 
-	if (!(dev->data->dev_conf.rxmode.offloads & RTE_ETH_RX_OFFLOAD_RSS_HASH)) {
-		PMD_DRV_LOG(ERR, "RSS was not configured for the PMD\n");
-		return -ENOTSUP;
-	}
+	// if (!(dev->data->dev_conf.rxmode.offloads & RTE_ETH_RX_OFFLOAD_RSS_HASH)) {
+	// 	PMD_DRV_LOG(ERR, "RSS was not configured for the PMD\n");
+	// 	return -ENOTSUP;
+	// }
 
 	if (rss_conf->rss_key != NULL) {
 		rc = ena_get_rss_hash_key(ena_dev, rss_conf->rss_key);
@@ -2746,9 +2787,9 @@ static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
 
 	for (i = 0; i < ENA_ADMIN_RSS_PROTO_NUM; ++i) {
 		proto = (enum ena_admin_flow_hash_proto)i;
-		rte_spinlock_lock(&adapter->admin_lock);
+		// rte_spinlock_lock(&adapter->admin_lock);
 		rc = ena_com_get_hash_ctrl(ena_dev, proto, &admin_hf);
-		rte_spinlock_unlock(&adapter->admin_lock);
+		// rte_spinlock_unlock(&adapter->admin_lock);
 		if (rc == ENA_COM_UNSUPPORTED) {
 			/* As some devices may support only reading rss hash
 			 * key and not the hash ctrl, we want to notify the
