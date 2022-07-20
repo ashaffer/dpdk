@@ -2826,11 +2826,11 @@ static int ena_get_rss_hash_key(struct ena_com_dev *ena_dev, uint8_t *rss_key)
 	/* The default RSS hash key cannot be retrieved from the HW. Unless it's
 	 * explicitly set, this operation shouldn't be supported.
 	 */
-	if (ena_dev->rss.hash_key == NULL) {
-		PMD_DRV_LOG(WARNING,
-			"Retrieving default RSS hash key is not supported\n");
-		return -ENOTSUP;
-	}
+	// if (ena_dev->rss.hash_key == NULL) {
+	// 	PMD_DRV_LOG(WARNING,
+	// 		"Retrieving default RSS hash key is not supported\n");
+	// 	return -ENOTSUP;
+	// }
 
 	rc = ena_com_get_hash_key(ena_dev, hw_rss_key);
 	if (rc != 0)
