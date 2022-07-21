@@ -347,6 +347,7 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
 	io_sq->bus = ena_dev->bus;
 
 	if (io_sq->mem_queue_type == ENA_ADMIN_PLACEMENT_POLICY_HOST) {
+		printf("pre ena_mem_alloc_coherent_node\n");
 		ENA_MEM_ALLOC_COHERENT_NODE(ena_dev->dmadev,
 					    size,
 					    io_sq->desc_addr.virt_addr,
@@ -355,6 +356,7 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
 					    ctx->numa_node,
 					    dev_node);
 		if (!io_sq->desc_addr.virt_addr) {
+			pintf("pre ena_mem_alloc_coherent\n");
 			ENA_MEM_ALLOC_COHERENT(ena_dev->dmadev,
 					       size,
 					       io_sq->desc_addr.virt_addr,
@@ -362,6 +364,7 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
 					       io_sq->desc_addr.mem_handle);
 		}
 
+		printf("post alloc 1\n");
 		if (!io_sq->desc_addr.virt_addr) {
 			ena_trc_err("memory allocation failed");
 			return ENA_COM_NO_MEM;
@@ -375,30 +378,34 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
 		io_sq->bounce_buf_ctrl.next_to_use = 0;
 
 		size = io_sq->bounce_buf_ctrl.buffer_size * io_sq->bounce_buf_ctrl.buffers_num;
-
+		printf("pre ena_mem_alloc_node2\n");
 		ENA_MEM_ALLOC_NODE(ena_dev->dmadev,
 				   size,
 				   io_sq->bounce_buf_ctrl.base_buffer,
 				   ctx->numa_node,
 				   dev_node);
-		if (!io_sq->bounce_buf_ctrl.base_buffer)
+		if (!io_sq->bounce_buf_ctrl.base_buffer) {
+			printf("pre ena_mem_alloc2\n");
 			io_sq->bounce_buf_ctrl.base_buffer = ENA_MEM_ALLOC(ena_dev->dmadev, size);
+		}
 
 		if (!io_sq->bounce_buf_ctrl.base_buffer) {
 			ena_trc_err("bounce buffer memory allocation failed");
 			return ENA_COM_NO_MEM;
 		}
 
+		printf("pre memcpy\n");
 		memcpy(&io_sq->llq_info, &ena_dev->llq_info, sizeof(io_sq->llq_info));
-
+		printf("post memcpy\n");
 		/* Initiate the first bounce buffer */
 		io_sq->llq_buf_ctrl.curr_bounce_buf =
 			ena_com_get_next_bounce_buffer(&io_sq->bounce_buf_ctrl);
+		printf("post ena_com_get_next_bounce_buffer\n");
 		memset(io_sq->llq_buf_ctrl.curr_bounce_buf,
 		       0x0, io_sq->llq_info.desc_list_entry_size);
 		io_sq->llq_buf_ctrl.descs_left_in_line =
 			io_sq->llq_info.descs_num_before_header;
-
+		printf("post memset\n");
 		if (io_sq->llq_info.max_entries_in_tx_burst > 0)
 			io_sq->entries_in_tx_burst_left =
 				io_sq->llq_info.max_entries_in_tx_burst;
