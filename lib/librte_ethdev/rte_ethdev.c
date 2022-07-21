@@ -1408,7 +1408,7 @@ rte_eth_dev_start(uint16_t port_id)
 	int diag;
 
 	RTE_ETH_VALID_PORTID_OR_ERR_RET(port_id, -EINVAL);
-
+	printf("a\n");
 	dev = &rte_eth_devices[port_id];
 
 	RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->dev_start, -ENOTSUP);
@@ -1420,12 +1420,13 @@ rte_eth_dev_start(uint16_t port_id)
 		return 0;
 	}
 
+	printf("b\n");
 	rte_eth_dev_info_get(port_id, &dev_info);
 
 	/* Lets restore MAC now if device does not support live change */
 	if (*dev_info.dev_flags & RTE_ETH_DEV_NOLIVE_MAC_ADDR)
 		rte_eth_dev_mac_restore(dev, &dev_info);
-
+	printf("c\n");
 	diag = (*dev->dev_ops->dev_start)(dev);
 	if (diag == 0)
 		dev->data->dev_started = 1;
@@ -1433,11 +1434,13 @@ rte_eth_dev_start(uint16_t port_id)
 		return eth_err(port_id, diag);
 
 	rte_eth_dev_config_restore(dev, &dev_info, port_id);
-
+	printf("d\n");
 	if (dev->data->dev_conf.intr_conf.lsc == 0) {
 		RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->link_update, -ENOTSUP);
 		(*dev->dev_ops->link_update)(dev, 0);
 	}
+
+	printf("e\n");
 	return 0;
 }
 
