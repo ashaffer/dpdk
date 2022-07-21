@@ -250,8 +250,6 @@ static int ena_xstats_get_by_id(struct rte_eth_dev *dev,
 				const uint64_t *ids,
 				uint64_t *values,
 				unsigned int n);
-static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
-			  struct rte_eth_rss_conf *rss_conf);
 
 static const struct eth_dev_ops ena_dev_ops = {
 	.dev_configure        = ena_dev_configure,
