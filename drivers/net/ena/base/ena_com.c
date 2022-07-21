@@ -1232,11 +1232,13 @@ static int ena_com_create_io_sq(struct ena_com_dev *ena_dev,
 		}
 	}
 
+	printf("ena_com_create_io_sq: pre ena_com_execute_admin_command\n");
 	ret = ena_com_execute_admin_command(admin_queue,
 					    (struct ena_admin_aq_entry *)&create_cmd,
 					    sizeof(create_cmd),
 					    (struct ena_admin_acq_entry *)&cmd_completion,
 					    sizeof(cmd_completion));
+	printf("ena_com_create_io_sq: post ena_com_execute_admin_command\n");
 	if (unlikely(ret)) {
 		ena_trc_err("Failed to create IO SQ. error: %d\n", ret);
 		return ret;
@@ -1409,11 +1411,13 @@ int ena_com_create_io_cq(struct ena_com_dev *ena_dev,
 		return ret;
 	}
 
+	printf("ena_com_create_io_cq: pre ena_com_execute_admin_command\n");
 	ret = ena_com_execute_admin_command(admin_queue,
 					    (struct ena_admin_aq_entry *)&create_cmd,
 					    sizeof(create_cmd),
 					    (struct ena_admin_acq_entry *)&cmd_completion,
 					    sizeof(cmd_completion));
+	printf("ena_com_create_io_cq: post ena_com_execute_admin_command\n");
 	if (unlikely(ret)) {
 		ena_trc_err("Failed to create IO CQ. error: %d\n", ret);
 		return ret;
@@ -1881,17 +1885,22 @@ int ena_com_create_io_queue(struct ena_com_dev *ena_dev,
 		io_sq->tx_max_header_size =
 			ENA_MIN32(ena_dev->tx_max_header_size, SZ_256);
 
+	printf("pre ena_com_init_io_sq\n");
 	ret = ena_com_init_io_sq(ena_dev, ctx, io_sq);
 	if (ret)
 		goto error;
+
+	printf("pre ena_com_init_io_cq\n");
 	ret = ena_com_init_io_cq(ena_dev, ctx, io_cq);
 	if (ret)
 		goto error;
 
+	printf("pre ena_com_create_io_cq\n");
 	ret = ena_com_create_io_cq(ena_dev, io_cq);
 	if (ret)
 		goto error;
 
+	printf("pre ena_com_create_io_sq\n");
 	ret = ena_com_create_io_sq(ena_dev, io_sq, io_cq->idx);
 	if (ret)
 		goto destroy_io_cq;

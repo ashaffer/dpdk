@@ -1148,6 +1148,7 @@ static int ena_create_io_queue(struct ena_ring *ring)
 	ctx.msix_vector = -1; /* interrupts not used */
 	ctx.numa_node = ena_cpu_to_node(ring->id);
 
+	printf("pre ena_com_create_io_queue\n");
 	rc = ena_com_create_io_queue(ena_dev, &ctx);
 	if (rc) {
 		RTE_LOG(ERR, PMD,
@@ -1155,7 +1156,7 @@ static int ena_create_io_queue(struct ena_ring *ring)
 			ring->id, ena_qid, rc);
 		return rc;
 	}
-
+	printf("pre ena_com_get_io_handlers\n");
 	rc = ena_com_get_io_handlers(ena_dev, ena_qid,
 				     &ring->ena_com_io_sq,
 				     &ring->ena_com_io_cq);
@@ -1166,7 +1167,7 @@ static int ena_create_io_queue(struct ena_ring *ring)
 		ena_com_destroy_io_queue(ena_dev, ena_qid);
 		return rc;
 	}
-
+	printf("pre ena_com_update_numa_node\n");
 	if (ring->type == ENA_RING_TYPE_TX)
 		ena_com_update_numa_node(ring->ena_com_io_cq, ctx.numa_node);
 
