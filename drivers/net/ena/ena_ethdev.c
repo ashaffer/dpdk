@@ -1214,6 +1214,7 @@ static int ena_queue_start(struct ena_ring *ring)
 	ena_assert_msg(ring->configured == 1,
 		       "Trying to start unconfigured queue\n");
 
+	printf("pre ena_create_io_queue\n");
 	rc = ena_create_io_queue(ring);
 	if (rc) {
 		PMD_INIT_LOG(ERR, "Failed to create IO queue!");
@@ -1223,6 +1224,7 @@ static int ena_queue_start(struct ena_ring *ring)
 	ring->next_to_clean = 0;
 	ring->next_to_use = 0;
 
+	printf("pre ena_com_free_desc\n");
 	if (ring->type == ENA_RING_TYPE_TX) {
 		ring->tx_stats.available_desc =
 			ena_com_free_desc(ring->ena_com_io_sq);
@@ -1230,7 +1232,9 @@ static int ena_queue_start(struct ena_ring *ring)
 	}
 
 	bufs_num = ring->ring_size - 1;
+	printf("pre ena_populate_rx_queue\n");
 	rc = ena_populate_rx_queue(ring, bufs_num);
+	printf("pre ena_com_destroy_io_queue\n");
 	if (rc != bufs_num) {
 		ena_com_destroy_io_queue(&ring->adapter->ena_dev,
 					 ENA_IO_RXQ_IDX(ring->id));
