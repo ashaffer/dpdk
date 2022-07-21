@@ -356,7 +356,7 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
 					    ctx->numa_node,
 					    dev_node);
 		if (!io_sq->desc_addr.virt_addr) {
-			pintf("pre ena_mem_alloc_coherent\n");
+			printf("pre ena_mem_alloc_coherent\n");
 			ENA_MEM_ALLOC_COHERENT(ena_dev->dmadev,
 					       size,
 					       io_sq->desc_addr.virt_addr,
