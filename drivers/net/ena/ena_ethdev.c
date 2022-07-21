@@ -269,8 +269,7 @@ static const struct eth_dev_ops ena_dev_ops = {
 	.dev_close            = ena_close,
 	.dev_reset            = ena_dev_reset,
 	.reta_update          = ena_rss_reta_update,
-	.reta_query           = ena_rss_reta_query,
-	.rss_hash_conf_get    = ena_rss_hash_conf_get,
+	.reta_query           = ena_rss_reta_query
 };
 
 #define NUMA_NO_NODE	SOCKET_ID_ANY
