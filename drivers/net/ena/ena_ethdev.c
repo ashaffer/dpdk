@@ -87,13 +87,6 @@
 
 #define ENA_MIN_RING_DESC	128
 
-#define ENA_HF_RSS_ALL_L2	(ENA_ADMIN_RSS_L3_SA | ENA_ADMIN_RSS_L3_DA)
-#define ENA_HF_RSS_ALL_L3	(ENA_ADMIN_RSS_L3_SA | ENA_ADMIN_RSS_L3_DA)
-#define ENA_HF_RSS_ALL_L4	(ENA_ADMIN_RSS_L4_SP | ENA_ADMIN_RSS_L4_DP)
-#define ENA_HF_RSS_ALL_L3_L4	(ENA_HF_RSS_ALL_L3 | ENA_HF_RSS_ALL_L4)
-#define ENA_HF_RSS_ALL_L2_L3_L4	(ENA_HF_RSS_ALL_L2 | ENA_HF_RSS_ALL_L3_L4)
-
-
 enum ethtool_stringset {
 	ETH_SS_TEST             = 0,
 	ETH_SS_STATS,
@@ -257,15 +250,8 @@ static int ena_xstats_get_by_id(struct rte_eth_dev *dev,
 				const uint64_t *ids,
 				uint64_t *values,
 				unsigned int n);
-static uint64_t ena_admin_hf_to_eth_hf(enum ena_admin_flow_hash_proto proto,
-				       uint16_t field);
-static void ena_reorder_rss_hash_key(uint8_t *reordered_key,
-		     uint8_t *key,
-		     size_t key_size);
 static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
 			  struct rte_eth_rss_conf *rss_conf);
-static int ena_get_rss_hash_key(struct ena_com_dev *ena_dev, uint8_t *rss_key);
-
 
 static const struct eth_dev_ops ena_dev_ops = {
 	.dev_configure        = ena_dev_configure,
@@ -825,9 +811,7 @@ static int ena_queue_start_all(struct rte_eth_dev *dev,
 					"Inconsistent state of tx queues\n");
 			}
 
-			printf("pre ena_queue_start %d\n", i);
 			rc = ena_queue_start(&queues[i]);
-			printf("post ena_queue_start %d\n", i);
 
 			if (rc) {
 				PMD_INIT_LOG(ERR,
@@ -1053,35 +1037,34 @@ static int ena_start(struct rte_eth_dev *dev)
 	uint64_t ticks;
 	int rc = 0;
 
-	printf("ena1\n");
 	rc = ena_check_valid_conf(adapter);
 	if (rc)
 		return rc;
-	printf("ena2\n");
+
 	rc = ena_queue_start_all(dev, ENA_RING_TYPE_RX);
 	if (rc)
 		return rc;
-	printf("ena3\n");
+
 	rc = ena_queue_start_all(dev, ENA_RING_TYPE_TX);
 	if (rc)
 		goto err_start_tx;
-	printf("ena4\n");
+
 	if (adapter->rte_dev->data->dev_conf.rxmode.mq_mode &
 	    ETH_MQ_RX_RSS_FLAG && adapter->rte_dev->data->nb_rx_queues > 0) {
 		rc = ena_rss_init_default(adapter);
 		if (rc)
 			goto err_rss_init;
 	}
-	printf("ena5\n");
+
 	ena_stats_restart(dev);
-	printf("ena6\n");
+
 	adapter->timestamp_wd = rte_get_timer_cycles();
 	adapter->keep_alive_timeout = ENA_DEVICE_KALIVE_TIMEOUT;
-	printf("ena7\n");
+
 	ticks = rte_get_timer_hz();
 	rte_timer_reset(&adapter->timer_wd, ticks, PERIODICAL, rte_lcore_id(),
 			ena_timer_wd_callback, adapter);
-	printf("ena8\n");
+
 	++adapter->dev_stats.dev_start;
 	adapter->state = ENA_ADAPTER_STATE_RUNNING;
 
@@ -1148,7 +1131,6 @@ static int ena_create_io_queue(struct ena_ring *ring)
 	ctx.msix_vector = -1; /* interrupts not used */
 	ctx.numa_node = ena_cpu_to_node(ring->id);
 
-	printf("pre ena_com_create_io_queue\n");
 	rc = ena_com_create_io_queue(ena_dev, &ctx);
 	if (rc) {
 		RTE_LOG(ERR, PMD,
@@ -1156,7 +1138,7 @@ static int ena_create_io_queue(struct ena_ring *ring)
 			ring->id, ena_qid, rc);
 		return rc;
 	}
-	printf("pre ena_com_get_io_handlers\n");
+
 	rc = ena_com_get_io_handlers(ena_dev, ena_qid,
 				     &ring->ena_com_io_sq,
 				     &ring->ena_com_io_cq);
@@ -1167,7 +1149,7 @@ static int ena_create_io_queue(struct ena_ring *ring)
 		ena_com_destroy_io_queue(ena_dev, ena_qid);
 		return rc;
 	}
-	printf("pre ena_com_update_numa_node\n");
+
 	if (ring->type == ENA_RING_TYPE_TX)
 		ena_com_update_numa_node(ring->ena_com_io_cq, ctx.numa_node);
 
@@ -1215,7 +1197,6 @@ static int ena_queue_start(struct ena_ring *ring)
 	ena_assert_msg(ring->configured == 1,
 		       "Trying to start unconfigured queue\n");
 
-	printf("pre ena_create_io_queue\n");
 	rc = ena_create_io_queue(ring);
 	if (rc) {
 		PMD_INIT_LOG(ERR, "Failed to create IO queue!");
@@ -1225,7 +1206,6 @@ static int ena_queue_start(struct ena_ring *ring)
 	ring->next_to_clean = 0;
 	ring->next_to_use = 0;
 
-	printf("pre ena_com_free_desc\n");
 	if (ring->type == ENA_RING_TYPE_TX) {
 		ring->tx_stats.available_desc =
 			ena_com_free_desc(ring->ena_com_io_sq);
@@ -1233,9 +1213,7 @@ static int ena_queue_start(struct ena_ring *ring)
 	}
 
 	bufs_num = ring->ring_size - 1;
-	printf("pre ena_populate_rx_queue\n");
 	rc = ena_populate_rx_queue(ring, bufs_num);
-	printf("pre ena_com_destroy_io_queue\n");
 	if (rc != bufs_num) {
 		ena_com_destroy_io_queue(&ring->adapter->ena_dev,
 					 ENA_IO_RXQ_IDX(ring->id));
@@ -2740,115 +2718,6 @@ static struct ena_aenq_handlers aenq_handlers = {
 	.unimplemented_handler = unimplemented_aenq_handler
 };
 
-static uint64_t ena_admin_hf_to_eth_hf(enum ena_admin_flow_hash_proto proto,
-				       uint16_t fields)
-{
-	uint64_t rss_hf = 0;
-
-	/* If no fields are activated, then RSS is disabled for this proto */
-	if ((fields & ENA_HF_RSS_ALL_L2_L3_L4) == 0)
-		return 0;
-
-	/* Convert proto to ETH flag */
-	switch (proto) {
-	case ENA_ADMIN_RSS_TCP4:
-		rss_hf |= RTE_ETH_RSS_NONFRAG_IPV4_TCP;
-		break;
-	case ENA_ADMIN_RSS_UDP4:
-		rss_hf |= RTE_ETH_RSS_NONFRAG_IPV4_UDP;
-		break;
-	case ENA_ADMIN_RSS_TCP6:
-		rss_hf |= RTE_ETH_RSS_NONFRAG_IPV6_TCP;
-		break;
-	case ENA_ADMIN_RSS_UDP6:
-		rss_hf |= RTE_ETH_RSS_NONFRAG_IPV6_UDP;
-		break;
-	case ENA_ADMIN_RSS_IP4:
-		rss_hf |= RTE_ETH_RSS_IPV4;
-		break;
-	case ENA_ADMIN_RSS_IP6:
-		rss_hf |= RTE_ETH_RSS_IPV6;
-		break;
-	case ENA_ADMIN_RSS_IP4_FRAG:
-		rss_hf |= RTE_ETH_RSS_FRAG_IPV4;
-		break;
-	case ENA_ADMIN_RSS_NOT_IP:
-		rss_hf |= RTE_ETH_RSS_L2_PAYLOAD;
-		break;
-	case ENA_ADMIN_RSS_TCP6_EX:
-		rss_hf |= RTE_ETH_RSS_IPV6_TCP_EX;
-		break;
-	case ENA_ADMIN_RSS_IP6_EX:
-		rss_hf |= RTE_ETH_RSS_IPV6_EX;
-		break;
-	default:
-		break;
-	};
-
-	/* Check if only DA or SA is being used for L3. */
-	switch (fields & ENA_HF_RSS_ALL_L3) {
-	case ENA_ADMIN_RSS_L3_SA:
-		rss_hf |= RTE_ETH_RSS_L3_SRC_ONLY;
-		break;
-	case ENA_ADMIN_RSS_L3_DA:
-		rss_hf |= RTE_ETH_RSS_L3_DST_ONLY;
-		break;
-	default:
-		break;
-	};
-
-	/* Check if only DA or SA is being used for L4. */
-	switch (fields & ENA_HF_RSS_ALL_L4) {
-	case ENA_ADMIN_RSS_L4_SP:
-		rss_hf |= RTE_ETH_RSS_L4_SRC_ONLY;
-		break;
-	case ENA_ADMIN_RSS_L4_DP:
-		rss_hf |= RTE_ETH_RSS_L4_DST_ONLY;
-		break;
-	default:
-		break;
-	};
-
-	return rss_hf;
-}
-
-
-/* ENA HW interprets the RSS key in reverse bytes order. Because of that, the
- * key must be processed upon interaction with ena_com layer.
- */
-static void ena_reorder_rss_hash_key(uint8_t *reordered_key,
-				     uint8_t *key,
-				     size_t key_size)
-{
-	size_t i, rev_i;
-
-	for (i = 0, rev_i = key_size - 1; i < key_size; ++i, --rev_i)
-		reordered_key[i] = key[rev_i];
-}
-
-static int ena_get_rss_hash_key(struct ena_com_dev *ena_dev, uint8_t *rss_key)
-{
-	uint8_t hw_rss_key[ENA_HASH_KEY_SIZE];
-	int rc;
-
-	/* The default RSS hash key cannot be retrieved from the HW. Unless it's
-	 * explicitly set, this operation shouldn't be supported.
-	 */
-	// if (ena_dev->rss.hash_key == NULL) {
-	// 	PMD_DRV_LOG(WARNING,
-	// 		"Retrieving default RSS hash key is not supported\n");
-	// 	return -ENOTSUP;
-	// }
-
-	rc = ena_com_get_hash_key(ena_dev, hw_rss_key);
-	if (rc != 0)
-		return rc;
-
-	ena_reorder_rss_hash_key(rss_key, hw_rss_key, ENA_HASH_KEY_SIZE);
-
-	return 0;
-}
-
 static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
 			  struct rte_eth_rss_conf *rss_conf)
 {
@@ -2860,10 +2729,10 @@ static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
 	uint16_t admin_hf;
 	static bool warn_once;
 
-	// if (!(dev->data->dev_conf.rxmode.offloads & RTE_ETH_RX_OFFLOAD_RSS_HASH)) {
-	// 	PMD_DRV_LOG(ERR, "RSS was not configured for the PMD\n");
-	// 	return -ENOTSUP;
-	// }
+	if (!(dev->data->dev_conf.rxmode.offloads & RTE_ETH_RX_OFFLOAD_RSS_HASH)) {
+		PMD_DRV_LOG(ERR, "RSS was not configured for the PMD\n");
+		return -ENOTSUP;
+	}
 
 	if (rss_conf->rss_key != NULL) {
 		rc = ena_get_rss_hash_key(ena_dev, rss_conf->rss_key);
@@ -2877,9 +2746,9 @@ static int ena_rss_hash_conf_get(struct rte_eth_dev *dev,
 
 	for (i = 0; i < ENA_ADMIN_RSS_PROTO_NUM; ++i) {
 		proto = (enum ena_admin_flow_hash_proto)i;
-		// rte_spinlock_lock(&adapter->admin_lock);
+		rte_spinlock_lock(&adapter->admin_lock);
 		rc = ena_com_get_hash_ctrl(ena_dev, proto, &admin_hf);
-		// rte_spinlock_unlock(&adapter->admin_lock);
+		rte_spinlock_unlock(&adapter->admin_lock);
 		if (rc == ENA_COM_UNSUPPORTED) {
 			/* As some devices may support only reading rss hash
 			 * key and not the hash ctrl, we want to notify the

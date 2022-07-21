@@ -347,7 +347,6 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
 	io_sq->bus = ena_dev->bus;
 
 	if (io_sq->mem_queue_type == ENA_ADMIN_PLACEMENT_POLICY_HOST) {
-		printf("pre ena_mem_alloc_coherent_node\n");
 		ENA_MEM_ALLOC_COHERENT_NODE(ena_dev->dmadev,
 					    size,
 					    io_sq->desc_addr.virt_addr,
@@ -356,7 +355,6 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
 					    ctx->numa_node,
 					    dev_node);
 		if (!io_sq->desc_addr.virt_addr) {
-			printf("pre ena_mem_alloc_coherent\n");
 			ENA_MEM_ALLOC_COHERENT(ena_dev->dmadev,
 					       size,
 					       io_sq->desc_addr.virt_addr,
@@ -364,7 +362,6 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
 					       io_sq->desc_addr.mem_handle);
 		}
 
-		printf("post alloc 1\n");
 		if (!io_sq->desc_addr.virt_addr) {
 			ena_trc_err("memory allocation failed");
 			return ENA_COM_NO_MEM;
@@ -378,34 +375,30 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
 		io_sq->bounce_buf_ctrl.next_to_use = 0;
 
 		size = io_sq->bounce_buf_ctrl.buffer_size * io_sq->bounce_buf_ctrl.buffers_num;
-		printf("pre ena_mem_alloc_node2\n");
+
 		ENA_MEM_ALLOC_NODE(ena_dev->dmadev,
 				   size,
 				   io_sq->bounce_buf_ctrl.base_buffer,
 				   ctx->numa_node,
 				   dev_node);
-		if (!io_sq->bounce_buf_ctrl.base_buffer) {
-			printf("pre ena_mem_alloc2\n");
+		if (!io_sq->bounce_buf_ctrl.base_buffer)
 			io_sq->bounce_buf_ctrl.base_buffer = ENA_MEM_ALLOC(ena_dev->dmadev, size);
-		}
 
 		if (!io_sq->bounce_buf_ctrl.base_buffer) {
 			ena_trc_err("bounce buffer memory allocation failed");
 			return ENA_COM_NO_MEM;
 		}
 
-		printf("pre memcpy\n");
 		memcpy(&io_sq->llq_info, &ena_dev->llq_info, sizeof(io_sq->llq_info));
-		printf("post memcpy\n");
+
 		/* Initiate the first bounce buffer */
 		io_sq->llq_buf_ctrl.curr_bounce_buf =
 			ena_com_get_next_bounce_buffer(&io_sq->bounce_buf_ctrl);
-		printf("post ena_com_get_next_bounce_buffer\n");
 		memset(io_sq->llq_buf_ctrl.curr_bounce_buf,
 		       0x0, io_sq->llq_info.desc_list_entry_size);
 		io_sq->llq_buf_ctrl.descs_left_in_line =
 			io_sq->llq_info.descs_num_before_header;
-		printf("post memset\n");
+
 		if (io_sq->llq_info.max_entries_in_tx_burst > 0)
 			io_sq->entries_in_tx_burst_left =
 				io_sq->llq_info.max_entries_in_tx_burst;
@@ -1239,13 +1232,11 @@ static int ena_com_create_io_sq(struct ena_com_dev *ena_dev,
 		}
 	}
 
-	printf("ena_com_create_io_sq: pre ena_com_execute_admin_command\n");
 	ret = ena_com_execute_admin_command(admin_queue,
 					    (struct ena_admin_aq_entry *)&create_cmd,
 					    sizeof(create_cmd),
 					    (struct ena_admin_acq_entry *)&cmd_completion,
 					    sizeof(cmd_completion));
-	printf("ena_com_create_io_sq: post ena_com_execute_admin_command\n");
 	if (unlikely(ret)) {
 		ena_trc_err("Failed to create IO SQ. error: %d\n", ret);
 		return ret;
@@ -1418,13 +1409,11 @@ int ena_com_create_io_cq(struct ena_com_dev *ena_dev,
 		return ret;
 	}
 
-	printf("ena_com_create_io_cq: pre ena_com_execute_admin_command\n");
 	ret = ena_com_execute_admin_command(admin_queue,
 					    (struct ena_admin_aq_entry *)&create_cmd,
 					    sizeof(create_cmd),
 					    (struct ena_admin_acq_entry *)&cmd_completion,
 					    sizeof(cmd_completion));
-	printf("ena_com_create_io_cq: post ena_com_execute_admin_command\n");
 	if (unlikely(ret)) {
 		ena_trc_err("Failed to create IO CQ. error: %d\n", ret);
 		return ret;
@@ -1892,22 +1881,17 @@ int ena_com_create_io_queue(struct ena_com_dev *ena_dev,
 		io_sq->tx_max_header_size =
 			ENA_MIN32(ena_dev->tx_max_header_size, SZ_256);
 
-	printf("pre ena_com_init_io_sq\n");
 	ret = ena_com_init_io_sq(ena_dev, ctx, io_sq);
 	if (ret)
 		goto error;
-
-	printf("pre ena_com_init_io_cq\n");
 	ret = ena_com_init_io_cq(ena_dev, ctx, io_cq);
 	if (ret)
 		goto error;
 
-	printf("pre ena_com_create_io_cq\n");
 	ret = ena_com_create_io_cq(ena_dev, io_cq);
 	if (ret)
 		goto error;
 
-	printf("pre ena_com_create_io_sq\n");
 	ret = ena_com_create_io_sq(ena_dev, io_sq, io_cq->idx);
 	if (ret)
 		goto destroy_io_cq;
@@ -3105,16 +3089,3 @@ int ena_com_config_dev_mode(struct ena_com_dev *ena_dev,
 
 	return 0;
 }
-
-int ena_com_get_hash_key(struct ena_com_dev *ena_dev, u8 *key)
-{
-	struct ena_admin_feature_rss_flow_hash_control *hash_key =
-		ena_dev->rss.hash_key;
-
-	if (key)
-		memcpy(key, hash_key->key,
-		       (size_t)(hash_key->keys_num) * sizeof(hash_key->key[0]));
-
-	return 0;
-}
-
