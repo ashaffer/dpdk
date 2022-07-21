@@ -825,7 +825,9 @@ static int ena_queue_start_all(struct rte_eth_dev *dev,
 					"Inconsistent state of tx queues\n");
 			}
 
+			printf("pre ena_queue_start %d\n", i);
 			rc = ena_queue_start(&queues[i]);
+			printf("post ena_queue_start %d\n", i);
 
 			if (rc) {
 				PMD_INIT_LOG(ERR,
@@ -1051,34 +1053,35 @@ static int ena_start(struct rte_eth_dev *dev)
 	uint64_t ticks;
 	int rc = 0;
 
+	printf("ena1\n");
 	rc = ena_check_valid_conf(adapter);
 	if (rc)
 		return rc;
-
+	printf("ena2\n");
 	rc = ena_queue_start_all(dev, ENA_RING_TYPE_RX);
 	if (rc)
 		return rc;
-
+	printf("ena3\n");
 	rc = ena_queue_start_all(dev, ENA_RING_TYPE_TX);
 	if (rc)
 		goto err_start_tx;
-
+	printf("ena4\n");
 	if (adapter->rte_dev->data->dev_conf.rxmode.mq_mode &
 	    ETH_MQ_RX_RSS_FLAG && adapter->rte_dev->data->nb_rx_queues > 0) {
 		rc = ena_rss_init_default(adapter);
 		if (rc)
 			goto err_rss_init;
 	}
-
+	printf("ena5\n");
 	ena_stats_restart(dev);
-
+	printf("ena6\n");
 	adapter->timestamp_wd = rte_get_timer_cycles();
 	adapter->keep_alive_timeout = ENA_DEVICE_KALIVE_TIMEOUT;
-
+	printf("ena7\n");
 	ticks = rte_get_timer_hz();
 	rte_timer_reset(&adapter->timer_wd, ticks, PERIODICAL, rte_lcore_id(),
 			ena_timer_wd_callback, adapter);
-
+	printf("ena8\n");
 	++adapter->dev_stats.dev_start;
 	adapter->state = ENA_ADAPTER_STATE_RUNNING;
 

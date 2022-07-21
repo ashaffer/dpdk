@@ -1432,9 +1432,9 @@ rte_eth_dev_start(uint16_t port_id)
 		dev->data->dev_started = 1;
 	else
 		return eth_err(port_id, diag);
+	printf("d\n");
 
 	rte_eth_dev_config_restore(dev, &dev_info, port_id);
-	printf("d\n");
 	if (dev->data->dev_conf.intr_conf.lsc == 0) {
 		RTE_FUNC_PTR_OR_ERR_RET(*dev->dev_ops->link_update, -ENOTSUP);
 		(*dev->dev_ops->link_update)(dev, 0);
