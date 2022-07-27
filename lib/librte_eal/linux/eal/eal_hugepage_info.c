@@ -406,6 +406,7 @@ hugepage_info_init(void)
 			rte_str_to_size(&dirent->d_name[dirent_start_len]);
 
 		/* first, check if we have a mountpoint */
+		printf("getting hugepage dir\n");
 		if (get_hugepage_dir(hpi->hugepage_sz,
 			hpi->hugedir, sizeof(hpi->hugedir)) < 0) {
 			uint32_t num_pages;
@@ -435,7 +436,7 @@ hugepage_info_init(void)
 #endif
 			continue;
 		}
-
+		printf("hugepage dir: %s\n", hpi->hugedir);
 		/* try to obtain a writelock */
 		hpi->lock_descriptor = open(hpi->hugedir, O_RDONLY);
 
