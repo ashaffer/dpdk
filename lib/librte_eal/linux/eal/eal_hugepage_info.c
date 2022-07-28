@@ -244,7 +244,7 @@ get_hugepage_dir(uint64_t hugepage_sz, char *hugedir, int len)
 			if (pagesz_str == NULL){
 				printf("pagesz is null\n");
 				if (hugepage_sz == default_size){
-					printf("returning success: %lu, %lu (%s)\n", hugepage_sz, pagesz, pagesz_str);
+					printf("returning success: %lu, %lu (%s)\n", hugepage_sz, default_size, pagesz_str);
 					strlcpy(hugedir, splitstr[MOUNTPT], len);
 					retval = 0;
 					break;
