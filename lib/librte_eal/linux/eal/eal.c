@@ -1055,7 +1055,6 @@ rte_eal_init(int argc, char **argv)
 	}
 
 	if (internal_config.no_hugetlbfs == 0) {
-		printf("no_hugetlbfs == 0\n");
 		/* rte_config isn't initialized yet */
 		ret = internal_config.process_type == RTE_PROC_PRIMARY ?
 				eal_hugepage_info_init() :
@@ -1066,8 +1065,6 @@ rte_eal_init(int argc, char **argv)
 			rte_atomic32_clear(&run_once);
 			return -1;
 		}
-	} else {
-		printf("no_hugetlbfs != 0\n");
 	}
 
 	if (internal_config.memory == 0 && internal_config.force_sockets == 0) {

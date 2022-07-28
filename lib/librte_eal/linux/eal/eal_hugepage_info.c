@@ -239,6 +239,7 @@ get_hugepage_dir(uint64_t hugepage_sz, char *hugedir, int len)
 			/* if no explicit page size, the default page size is compared */
 			if (pagesz_str == NULL){
 				if (hugepage_sz == default_size){
+					printf("pagesz is null: %lu, %lu\n", hugepage_sz, default_size);
 					strlcpy(hugedir, splitstr[MOUNTPT], len);
 					retval = 0;
 					break;
@@ -248,6 +249,7 @@ get_hugepage_dir(uint64_t hugepage_sz, char *hugedir, int len)
 			else {
 				uint64_t pagesz = rte_str_to_size(&pagesz_str[pagesize_opt_len]);
 				if (pagesz == hugepage_sz) {
+					printf("pagesz is non-null: %lu, %lu (%s)\n", hugepage_sz, pagesz, pagesz_str);
 					strlcpy(hugedir, splitstr[MOUNTPT], len);
 					retval = 0;
 					break;
