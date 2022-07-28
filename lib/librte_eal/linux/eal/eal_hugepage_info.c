@@ -225,21 +225,26 @@ get_hugepage_dir(uint64_t hugepage_sz, char *hugedir, int len)
 		if (rte_strsplit(buf, sizeof(buf), splitstr, _FIELDNAME_MAX,
 				split_tok) != _FIELDNAME_MAX) {
 			RTE_LOG(ERR, EAL, "Error parsing %s\n", proc_mounts);
+			printf("str split error\n");
 			break; /* return NULL */
 		}
 
+		printf("get_hugepage_dir: %lu, %lu (%s)\n", hugepage_sz, default_size, splitstr[MOUNTPT]);
 		/* we have a specified --huge-dir option, only examine that dir */
 		if (internal_config.hugepage_dir != NULL &&
-				strcmp(splitstr[MOUNTPT], internal_config.hugepage_dir) != 0)
+				strcmp(splitstr[MOUNTPT], internal_config.hugepage_dir) != 0) {
+			printf("skipping due to wrong config\n");
 			continue;
+		}
 
 		if (strncmp(splitstr[FSTYPE], hugetlbfs_str, htlbfs_str_len) == 0){
 			const char *pagesz_str = strstr(splitstr[OPTIONS], pagesize_opt);
 
 			/* if no explicit page size, the default page size is compared */
 			if (pagesz_str == NULL){
+				printf("pagesz is null\n");
 				if (hugepage_sz == default_size){
-					printf("pagesz is null: %lu, %lu\n", hugepage_sz, default_size);
+					printf("returning success: %lu, %lu (%s)\n", hugepage_sz, pagesz, pagesz_str);
 					strlcpy(hugedir, splitstr[MOUNTPT], len);
 					retval = 0;
 					break;
@@ -247,9 +252,10 @@ get_hugepage_dir(uint64_t hugepage_sz, char *hugedir, int len)
 			}
 			/* there is an explicit page size, so check it */
 			else {
+				printf("pagesz is non-null\n");
 				uint64_t pagesz = rte_str_to_size(&pagesz_str[pagesize_opt_len]);
 				if (pagesz == hugepage_sz) {
-					printf("pagesz is non-null: %lu, %lu (%s)\n", hugepage_sz, pagesz, pagesz_str);
+					printf("returning success: %lu, %lu (%s)\n", hugepage_sz, pagesz, pagesz_str);
 					strlcpy(hugedir, splitstr[MOUNTPT], len);
 					retval = 0;
 					break;
