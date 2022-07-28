@@ -404,6 +404,7 @@ hugepage_info_init(void)
 			break;
 
 		hpi = &internal_config.hugepage_info[num_sizes];
+		printf("hugepage_sz: %s\n", dirent->d_name);
 		hpi->hugepage_sz =
 			rte_str_to_size(&dirent->d_name[dirent_start_len]);
 
