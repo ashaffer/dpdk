@@ -251,6 +251,8 @@ static int ena_xstats_get_by_id(struct rte_eth_dev *dev,
 				uint64_t *values,
 				unsigned int n);
 
+static void print_backtrace (void);
+
 static const struct eth_dev_ops ena_dev_ops = {
 	.dev_configure        = ena_dev_configure,
 	.dev_infos_get        = ena_infos_get,
@@ -1187,8 +1189,8 @@ static void ena_queue_stop_all(struct rte_eth_dev *dev,
 			ena_queue_stop(&queues[i]);
 }
 
-void print_backtrace (void) {
-	void *buffers[100];
+static void print_backtrace (void) {
+	void *buffer[100];
 	char **strings;
 	int nptrs = backtrace(buffer, 100);
 
