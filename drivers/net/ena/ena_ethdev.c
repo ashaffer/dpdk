@@ -2327,6 +2327,14 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 		mbuf = tx_pkts[sent_idx];
 		total_length = 0;
 
+		char *d = rte_pktmbuf_mtod(mbuf, char *);
+		uint sz = rte_pktmbuf_data_len(mbuf);
+		printf("ENA Sending packet: ");
+		for (uint i = 0; i < sz; i++) {
+		    printf("%02x ", (uint8_t)d[i]);
+		}
+		printf("\n");
+
 		rc = ena_check_and_linearize_mbuf(tx_ring, mbuf);
 		if (unlikely(rc))
 			break;

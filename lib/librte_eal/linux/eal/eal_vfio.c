@@ -1256,7 +1256,6 @@ vfio_type1_dma_mem_map(int vfio_container_fd, uint64_t vaddr, uint64_t iova,
 	int ret;
 
 	if (do_map != 0) {
-		printf("vfio_type1_dma_mem_map: do_map != 0\n");
 		memset(&dma_map, 0, sizeof(dma_map));
 		dma_map.argsz = sizeof(struct vfio_iommu_type1_dma_map);
 		dma_map.vaddr = vaddr;
@@ -1284,7 +1283,6 @@ vfio_type1_dma_mem_map(int vfio_container_fd, uint64_t vaddr, uint64_t iova,
 			}
 		}
 	} else {
-		printf("vfio_type1_dma_mem_map: do_map == 0\n");
 		memset(&dma_unmap, 0, sizeof(dma_unmap));
 		dma_unmap.argsz = sizeof(struct vfio_iommu_type1_dma_unmap);
 		dma_unmap.size = len;
