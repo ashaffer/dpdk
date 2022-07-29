@@ -798,6 +798,7 @@ static int ena_queue_start_all(struct rte_eth_dev *dev,
 		queues = adapter->tx_ring;
 		nb_queues = dev->data->nb_tx_queues;
 	}
+	printf("Attempting to start %d queues of type %d\n", nb_queues, (int)ring_type);
 	for (i = 0; i < nb_queues; i++) {
 		if (queues[i].configured) {
 			if (ring_type == ENA_RING_TYPE_RX) {
@@ -817,6 +818,8 @@ static int ena_queue_start_all(struct rte_eth_dev *dev,
 					     "failed to start queue %d type(%d)",
 					     i, ring_type);
 				goto err;
+			} else {
+				printf("\tstarted queue %d type(%d)\n", i, (int)ring_type);
 			}
 		}
 	}
@@ -1043,10 +1046,14 @@ static int ena_start(struct rte_eth_dev *dev)
 	rc = ena_queue_start_all(dev, ENA_RING_TYPE_RX);
 	if (rc)
 		return rc;
+	else
+		printf("Successfully started RX queues\n");
 
 	rc = ena_queue_start_all(dev, ENA_RING_TYPE_TX);
 	if (rc)
 		goto err_start_tx;
+	else
+		printf("Successfully started TX queues\n");
 
 	if (adapter->rte_dev->data->dev_conf.rxmode.mq_mode &
 	    ETH_MQ_RX_RSS_FLAG && adapter->rte_dev->data->nb_rx_queues > 0) {
