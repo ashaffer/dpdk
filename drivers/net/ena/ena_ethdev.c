@@ -2111,6 +2111,7 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 			mbuf->refcnt = 1;
 			mbuf->next = NULL;
 			if (unlikely(segments == 0)) {
+				printf("zero segments\n");
 				mbuf->nb_segs = ena_rx_ctx.descs;
 				mbuf->port = rx_ring->port_id;
 				mbuf->pkt_len = 0;
@@ -2137,13 +2138,15 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		uint sz = rte_pktmbuf_data_len(mbuf_head);
 		printf("ENA Received packet: ");
 		for (uint i = 0; i < sz; i++) {
-		    printf("%2x ", (uint8_t)d[i]);
+		    printf("%02x ", (uint8_t)d[i]);
 		}
 		printf("\n");
 
 		if (unlikely(mbuf_head->ol_flags &
-			(PKT_RX_IP_CKSUM_BAD | PKT_RX_L4_CKSUM_BAD)))
+			(PKT_RX_IP_CKSUM_BAD | PKT_RX_L4_CKSUM_BAD))) {
 			++rx_ring->rx_stats.bad_csum;
+			printf("Bad L4 checksum on packet\n");
+		}
 
 		mbuf_head->hash.rss = ena_rx_ctx.hash;
 
