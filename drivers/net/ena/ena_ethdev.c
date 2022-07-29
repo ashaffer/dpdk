@@ -2103,6 +2103,14 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		/* fill mbuf attributes if any */
 		ena_rx_mbuf_prepare(mbuf_head, &ena_rx_ctx);
 
+		char *d = rte_pktmbuf_mtod(m, char *);
+		uint sz = rte_pktmbuf_data_len(m);
+		printf("ENA Received packet: ");
+		for (uint i = 0; i < sz; i++) {
+		    printf("%2x ", (uint8_t)d[i]);
+		}
+		printf("\n");
+
 		if (unlikely(mbuf_head->ol_flags &
 			(PKT_RX_IP_CKSUM_BAD | PKT_RX_L4_CKSUM_BAD)))
 			++rx_ring->rx_stats.bad_csum;
