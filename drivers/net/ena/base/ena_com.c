@@ -550,7 +550,7 @@ static int ena_com_wait_and_process_admin_cq_polling(struct ena_comp_ctx *comp_c
 	unsigned long timeout;
 	int ret;
 
-	timeout = ENA_GET_SYSTEM_TIMEOUT(admin_queue->completion_timeout);
+	timeout = ENA_GET_SYSTEM_TIMEOUT(admin_queue->completion_timeout) * 3;
 
 	while (1) {
                 ENA_SPINLOCK_LOCK(admin_queue->q_lock, flags);
