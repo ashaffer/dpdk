@@ -1192,7 +1192,7 @@ static void ena_queue_stop_all(struct rte_eth_dev *dev,
 static void print_backtrace (void) {
 	void *buffer[100];
 	char **strings;
-	int nptrs = backtrace(buffer, 100);
+	uint nptrs = backtrace(buffer, 100);
 
 	strings = backtrace_symbols(buffer, nptrs);
 	if (strings == NULL) {
