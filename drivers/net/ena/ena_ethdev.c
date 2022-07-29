@@ -31,6 +31,7 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <execinfo.h>
 #include <rte_string_fns.h>
 #include <rte_ether.h>
 #include <rte_ethdev_driver.h>
@@ -42,7 +43,6 @@
 #include <rte_version.h>
 #include <rte_eal_memconfig.h>
 #include <rte_net.h>
-
 #include "ena_ethdev.h"
 #include "ena_logs.h"
 #include "ena_platform.h"
@@ -1187,6 +1187,25 @@ static void ena_queue_stop_all(struct rte_eth_dev *dev,
 			ena_queue_stop(&queues[i]);
 }
 
+static void print_backtrace () {
+	void *buffers[100]
+	char **strings;
+	int nptrs = backtrace(buffer, 100);
+
+	strings = backtrace_symbols(buffer, nptrs);
+	if (strings == NULL) {
+		printf("Failed to generate symbol backtrace\n");
+		return;
+	}
+
+	printf("Callstack:\n");
+	for (uint i = 0; i < nptrs; i++) {
+		printf("%s\n", strings[i]);
+	}
+
+	free(strings);
+}
+
 static int ena_queue_start(struct ena_ring *ring)
 {
 	int rc, bufs_num;
@@ -1197,6 +1216,7 @@ static int ena_queue_start(struct ena_ring *ring)
 	rc = ena_create_io_queue(ring);
 	if (rc) {
 		PMD_INIT_LOG(ERR, "Failed to create IO queue!");
+		print_backtrace();
 		return rc;
 	}
 
