@@ -550,7 +550,7 @@ static int ena_com_wait_and_process_admin_cq_polling(struct ena_comp_ctx *comp_c
 	unsigned long timeout;
 	int ret;
 
-	timeout = ENA_GET_SYSTEM_TIMEOUT(admin_queue->completion_timeout) * 3;
+	timeout = ENA_GET_SYSTEM_TIMEOUT(admin_queue->completion_timeout);
 
 	while (1) {
                 ENA_SPINLOCK_LOCK(admin_queue->q_lock, flags);
@@ -1371,12 +1371,15 @@ int ena_com_execute_admin_command(struct ena_com_admin_queue *admin_queue,
 
 	ret = ena_com_wait_and_process_admin_cq(comp_ctx, admin_queue);
 	if (unlikely(ret)) {
+		printf("ENA failed to process command: %d\n");
 		if (admin_queue->running_state)
 			ena_trc_err("Failed to process command. ret = %d\n",
 				    ret);
 		else
 			ena_trc_dbg("Failed to process command. ret = %d\n",
 				    ret);
+	} else {
+		printf("ENA processed admin command successfully\n");
 	}
 	return ret;
 }

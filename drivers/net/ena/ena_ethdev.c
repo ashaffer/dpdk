@@ -2069,6 +2069,7 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 			req_id = ena_rx_ctx.ena_bufs[segments].req_id;
 			rc = validate_rx_req_id(rx_ring, req_id);
 			if (unlikely(rc)) {
+				printf("validate_rx_req_id failed: %u\n", (uint)rc);
 				if (segments != 0)
 					rte_mbuf_raw_free(mbuf_head);
 				break;
