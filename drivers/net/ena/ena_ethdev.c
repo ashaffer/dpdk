@@ -2103,8 +2103,8 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		/* fill mbuf attributes if any */
 		ena_rx_mbuf_prepare(mbuf_head, &ena_rx_ctx);
 
-		char *d = rte_pktmbuf_mtod(m, char *);
-		uint sz = rte_pktmbuf_data_len(m);
+		char *d = rte_pktmbuf_mtod(mbuf_head, char *);
+		uint sz = rte_pktmbuf_data_len(mbuf_head);
 		printf("ENA Received packet: ");
 		for (uint i = 0; i < sz; i++) {
 		    printf("%2x ", (uint8_t)d[i]);
