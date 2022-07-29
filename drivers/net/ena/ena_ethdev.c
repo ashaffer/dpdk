@@ -1187,7 +1187,7 @@ static void ena_queue_stop_all(struct rte_eth_dev *dev,
 			ena_queue_stop(&queues[i]);
 }
 
-static void print_backtrace () {
+void print_backtrace () {
 	void *buffers[100]
 	char **strings;
 	int nptrs = backtrace(buffer, 100);
