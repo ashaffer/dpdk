@@ -2153,24 +2153,10 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		char *d = rte_pktmbuf_mtod(mbuf_head, char *);
 		int sz = rte_pktmbuf_data_len(mbuf_head);
 		printf("ENA Received packet 0x%lx 0x%lx  0x%lx 0x%04x: ", (uint64_t)mbuf, (uint64_t)mbuf_head->buf_addr, mbuf_head->buf_iova, mbuf_head->data_off);
-		for (int i = -8; i < sz; i++) {
+		for (int i = 0; i < sz; i++) {
 		    printf("%02x ", (uint8_t)d[i]);
 		}
 		printf("\n");
-
-		for (uint j = 0; j < 1024; j++) {
-			struct rte_mbuf *mbb = rx_buff_info[j];
-			if (mbb == NULL) continue;
-			d = rte_pktmbuf_mtod(mbb, char *);
-			sz = rte_pktmbuf_data_len(mbb);
-			if (mbb->buf_addr == NULL) continue;
-
-			printf("\t %d - 0x%lx 0x%lx  0x%lx 0x%04x: ", j, (uint64_t)mbb, (uint64_t)mbb->buf_addr, mbb->buf_iova, mbb->data_off);
-			for (int i = -8; i < sz; i++) {
-			    printf("%02x ", (uint8_t)d[i]);
-			}
-			printf("\n");
-		}
 
 		if (unlikely(mbuf_head->ol_flags &
 			(PKT_RX_IP_CKSUM_BAD | PKT_RX_L4_CKSUM_BAD))) {
