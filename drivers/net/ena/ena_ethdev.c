@@ -2126,12 +2126,13 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 			mbuf->refcnt = 1;
 			mbuf->next = NULL;
 			if (unlikely(segments == 0)) {
-				printf("zero segments\n");
+				printf("zero segments: %u\n", req_id);
 				mbuf->nb_segs = ena_rx_ctx.descs;
 				mbuf->port = rx_ring->port_id;
 				mbuf->pkt_len = 0;
 				mbuf_head = mbuf;
 			} else {
+				printf("non-zero segments: %u\n", req_id);
 				/* for multi-segment pkts create mbuf chain */
 				mbuf_prev->next = mbuf;
 			}
