@@ -1449,7 +1449,7 @@ static int ena_populate_rx_queue(struct ena_ring *rxq, unsigned int count)
 		uint16_t next_to_use_masked = next_to_use & ring_mask;
 		struct rte_mbuf *mbuf = mbufs[i];
 		if (i < 2) {
-			printf("populating mbuf: 0x%lx (0x%lx, 0x%lx)\n", (uint64_t)mbuf, mbuf->buf_addr, mbuf->buf_iova);
+			printf("populating mbuf: 0x%lx (0x%lx, 0x%lx)\n", (uint64_t)mbuf, (uint64_t)mbuf->buf_addr, (uint64_t)mbuf->buf_iova);
 		}
 		struct ena_com_buf ebuf;
 
