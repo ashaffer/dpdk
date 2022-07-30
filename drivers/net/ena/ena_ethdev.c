@@ -2062,8 +2062,6 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 	struct rte_mbuf **rx_buff_info = rx_ring->rx_buffer_info;
 	unsigned int completed;
 
-	printf("eth_ena_recv_pkts: 0x%lx, 0x%lx\n", (uint64_t)rx_buff_info[0], (uint64_t)rx_buff_info[1]);
-
 	struct ena_com_rx_ctx ena_rx_ctx;
 	int rc = 0;
 
@@ -2099,6 +2097,10 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 
 		if (unlikely(ena_rx_ctx.descs == 0))
 			break;
+
+		if (completed == 0) {
+			printf("eth_ena_recv_pkts: 0x%lx, 0x%lx\n", (uint64_t)rx_buff_info[0], (uint64_t)rx_buff_info[1]);
+		}
 
 		while (segments < ena_rx_ctx.descs) {
 			req_id = ena_rx_ctx.ena_bufs[segments].req_id;
