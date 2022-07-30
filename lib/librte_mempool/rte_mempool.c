@@ -591,16 +591,20 @@ rte_mempool_populate_default(struct rte_mempool *mp)
 		else
 			iova = mz->iova;
 
-		if (no_pageshift || try_contig)
+		if (no_pageshift || try_contig) {
+			printf("populate_default: populae_iova: 0x%lx\n", pg_sz);
 			ret = rte_mempool_populate_iova(mp, mz->addr,
 				iova, mz->len,
 				rte_mempool_memchunk_mz_free,
 				(void *)(uintptr_t)mz);
-		else
+		}
+		else {
+			printf("populate_default: populate_virt: 0x%lx\n", pg_sz);
 			ret = rte_mempool_populate_virt(mp, mz->addr,
 				RTE_ALIGN_FLOOR(mz->len, pg_sz), pg_sz,
 				rte_mempool_memchunk_mz_free,
 				(void *)(uintptr_t)mz);
+		}
 		if (ret < 0) {
 			rte_memzone_free(mz);
 			goto fail;
