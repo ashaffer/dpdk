@@ -2158,7 +2158,7 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		}
 		printf("\n");
 
-		for (uint j = 0; j < 2048; j++) {
+		for (uint j = 0; j < 1024; j++) {
 			struct rte_mbuf *mbb = rx_buff_info[j];
 			if (mbb == NULL) continue;
 			d = rte_pktmbuf_mtod(mbb, char *);
