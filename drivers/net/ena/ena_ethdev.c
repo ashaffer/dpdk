@@ -2160,6 +2160,7 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 
 		for (uint j = 0; j < 2048; j++) {
 			struct rte_mbuf *mbb = rx_buff_info[j];
+			if (mbb == NULL) continue;
 			d = rte_pktmbuf_mtod(mbb, char *);
 			sz = rte_pktmbuf_data_len(mbb);
 			printf("\t %d - 0x%lx 0x%lx  0x%lx 0x%04x: ", j, (uint64_t)mbb, (uint64_t)mbb->buf_addr, mbb->buf_iova, mbb->data_off);
