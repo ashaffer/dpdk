@@ -2152,11 +2152,22 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 
 		char *d = rte_pktmbuf_mtod(mbuf_head, char *);
 		uint sz = rte_pktmbuf_data_len(mbuf_head);
-		printf("ENA Received packet: 0x%lx 0x%lx  0x%lx 0x%04x\n", (uint64_t)mbuf, (uint64_t)mbuf_head->buf_addr, mbuf_head->buf_iova, mbuf_head->data_off);
-		for (uint i = 0; i < sz; i++) {
+		printf("ENA Received packet 0x%lx 0x%lx  0x%lx 0x%04x: ", (uint64_t)mbuf, (uint64_t)mbuf_head->buf_addr, mbuf_head->buf_iova, mbuf_head->data_off);
+		for (int i = -8; i < sz; i++) {
 		    printf("%02x ", (uint8_t)d[i]);
 		}
 		printf("\n");
+
+		for (uint j = 0; j < 2048; j++) {
+			auto mb = rx_buff_info[j];
+			char *d = rte_pktmbuf_mtod(mb, char *);
+			uint sz = rte_pktmbuf_data_len(mb);
+			printf("\t %d - 0x%lx 0x%lx  0x%lx 0x%04x: ", j, (uint64_t)mb, (uint64_t)mb->buf_addr, mb->buf_iova, mb->data_off);
+			for (uint i = -8; i < sz; i++) {
+			    printf("%02x ", (uint8_t)d[i]);
+			}
+			printf("\n");
+		}
 
 		if (unlikely(mbuf_head->ol_flags &
 			(PKT_RX_IP_CKSUM_BAD | PKT_RX_L4_CKSUM_BAD))) {
