@@ -2151,7 +2151,7 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		ena_rx_mbuf_prepare(mbuf_head, &ena_rx_ctx);
 
 		char *d = rte_pktmbuf_mtod(mbuf_head, char *);
-		uint sz = rte_pktmbuf_data_len(mbuf_head);
+		int sz = rte_pktmbuf_data_len(mbuf_head);
 		printf("ENA Received packet 0x%lx 0x%lx  0x%lx 0x%04x: ", (uint64_t)mbuf, (uint64_t)mbuf_head->buf_addr, mbuf_head->buf_iova, mbuf_head->data_off);
 		for (int i = -8; i < sz; i++) {
 		    printf("%02x ", (uint8_t)d[i]);
@@ -2159,10 +2159,10 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		printf("\n");
 
 		for (uint j = 0; j < 2048; j++) {
-			auto mb = rx_buff_info[j];
-			char *d = rte_pktmbuf_mtod(mb, char *);
-			uint sz = rte_pktmbuf_data_len(mb);
-			printf("\t %d - 0x%lx 0x%lx  0x%lx 0x%04x: ", j, (uint64_t)mb, (uint64_t)mb->buf_addr, mb->buf_iova, mb->data_off);
+			auto mbb = rx_buff_info[j];
+			d = rte_pktmbuf_mtod(mbb, char *);
+			sz = rte_pktmbuf_data_len(mbb);
+			printf("\t %d - 0x%lx 0x%lx  0x%lx 0x%04x: ", j, (uint64_t)mbb, (uint64_t)mbb->buf_addr, mbb->buf_iova, mbb->data_off);
 			for (uint i = -8; i < sz; i++) {
 			    printf("%02x ", (uint8_t)d[i]);
 			}
