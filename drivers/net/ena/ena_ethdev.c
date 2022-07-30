@@ -1448,6 +1448,9 @@ static int ena_populate_rx_queue(struct ena_ring *rxq, unsigned int count)
 	for (i = 0; i < count; i++) {
 		uint16_t next_to_use_masked = next_to_use & ring_mask;
 		struct rte_mbuf *mbuf = mbufs[i];
+		if (i < 2) {
+			printf("populating mbuf: 0x%lx\n", (uint64_t)mbuf);
+		}
 		struct ena_com_buf ebuf;
 
 		if (likely((i + 4) < count))
@@ -2059,6 +2062,8 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 	struct rte_mbuf **rx_buff_info = rx_ring->rx_buffer_info;
 	unsigned int completed;
 
+	printf("eth_ena_recv_pkts: 0x%lx, 0x%lx\n", (uint64_t)rx_buff_info[0], (uint64_t)rx_buff_info[1]);
+
 	struct ena_com_rx_ctx ena_rx_ctx;
 	int rc = 0;
 
@@ -2163,6 +2168,7 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 	desc_in_use = desc_in_use - completed + 1;
 	/* Burst refill to save doorbells, memory barriers, const interval */
 	if (ring_size - desc_in_use > ENA_RING_DESCS_RATIO(ring_size)) {
+		printf("Burst refill\n");
 		ena_com_update_dev_comp_head(rx_ring->ena_com_io_cq);
 		ena_populate_rx_queue(rx_ring, ring_size - desc_in_use);
 	}
