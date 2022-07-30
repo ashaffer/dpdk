@@ -1428,6 +1428,7 @@ static int ena_populate_rx_queue(struct ena_ring *rxq, unsigned int count)
 	uint16_t next_to_use = rxq->next_to_use;
 	uint16_t in_use, req_id;
 	struct rte_mbuf **mbufs = rxq->rx_refill_buffer;
+	printf("ena_populate_rx_queue: 0x%lx, 0x%lx\n", (uint64_t)mbufs, (uint64_t)rxq->mb_pool);
 
 	if (unlikely(!count))
 		return 0;
