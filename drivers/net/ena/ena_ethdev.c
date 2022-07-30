@@ -2152,7 +2152,7 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 
 		char *d = rte_pktmbuf_mtod(mbuf_head, char *);
 		uint sz = rte_pktmbuf_data_len(mbuf_head);
-		printf("ENA Received packet: 0x%lx 0x%lx  0x%lx 0x%04x\n", (uint64_t)mbuf, (uint64_t)mbuf_head->buf_addr, mbuf_head->iova_addr, mbuf_head->data_off);
+		printf("ENA Received packet: 0x%lx 0x%lx  0x%lx 0x%04x\n", (uint64_t)mbuf, (uint64_t)mbuf_head->buf_addr, mbuf_head->buf_iova, mbuf_head->data_off);
 		for (uint i = 0; i < sz; i++) {
 		    printf("%02x ", (uint8_t)d[i]);
 		}
