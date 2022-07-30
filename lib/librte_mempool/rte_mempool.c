@@ -540,8 +540,10 @@ rte_mempool_populate_default(struct rte_mempool *mp)
 		/* if we're trying to reserve contiguous memory, add appropriate
 		 * memzone flag.
 		 */
-		if (try_contig)
+		if (try_contig) {
+			printf("try_contig is true\n");
 			flags |= RTE_MEMZONE_IOVA_CONTIG;
+		}
 
 		mz = rte_memzone_reserve_aligned(mz_name, mem_size,
 				mp->socket_id, flags, align);
@@ -592,7 +594,7 @@ rte_mempool_populate_default(struct rte_mempool *mp)
 			iova = mz->iova;
 
 		if (no_pageshift || try_contig) {
-			printf("populate_default: populae_iova: 0x%lx\n", pg_sz);
+			printf("populate_default: populate_iova: 0x%lx\n", pg_sz);
 			ret = rte_mempool_populate_iova(mp, mz->addr,
 				iova, mz->len,
 				rte_mempool_memchunk_mz_free,
