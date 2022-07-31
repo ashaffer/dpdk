@@ -1446,7 +1446,7 @@ static int ena_populate_rx_queue(struct ena_ring *rxq, unsigned int count)
 	}
 
 	struct rte_mbuf *mb = mbufs[768];
-	printf("populating mbuf: 0x%lx (0x%lx, 0x%lx, 0x%lx)\n", (uint64_t)mb, (uint64_t)mb->buf_addr, (uint64_t)mb->buf_iova, , rte_mem_virt2iova(mb->buf_addr));
+	printf("populating mbuf: 0x%lx (0x%lx, 0x%lx, 0x%lx)\n", (uint64_t)mb, (uint64_t)mb->buf_addr, (uint64_t)mb->buf_iova, rte_mem_virt2iova(mb->buf_addr));
 	printf("mbuf initial:: ");
 	for (uint j = 0; j < 16; j++) {
 	    printf("%02x ", ((uint8_t *)mb->buf_addr)[j]);
