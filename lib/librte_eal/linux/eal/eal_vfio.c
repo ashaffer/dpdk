@@ -1638,6 +1638,7 @@ vfio_dma_mem_map(struct vfio_config *vfio_cfg, uint64_t vaddr, uint64_t iova,
 		return -1;
 	}
 
+	printf("vfio_dma_mem_map: 0x%lx 0x%lx\n", vaddr, iova);
 	return t->dma_user_map_func(vfio_cfg->vfio_container_fd, vaddr, iova,
 			len, do_map);
 }
