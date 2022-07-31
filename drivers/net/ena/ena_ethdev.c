@@ -1445,18 +1445,17 @@ static int ena_populate_rx_queue(struct ena_ring *rxq, unsigned int count)
 		return 0;
 	}
 
+	struct rte_mbuf *mb = mbufs[768];
+	printf("populating mbuf: 0x%lx (0x%lx, 0x%lx, 0x%lx)\n", (uint64_t)mb, (uint64_t)mb->buf_addr, (uint64_t)mb->buf_iova, , rte_mem_virt2iova(mb->buf_addr));
+	printf("mbuf initial:: ");
+	for (uint j = 0; j < 16; j++) {
+	    printf("%02x ", ((uint8_t *)mb->buf_addr)[j]);
+	}
+	printf("\n");
+
 	for (i = 0; i < count; i++) {
 		uint16_t next_to_use_masked = next_to_use & ring_mask;
 		struct rte_mbuf *mbuf = mbufs[i];
-		if (i < 2) {
-			printf("populating mbuf: 0x%lx (0x%lx, 0x%lx)\n", (uint64_t)mbuf, (uint64_t)mbuf->buf_addr, (uint64_t)mbuf->buf_iova);
-			printf("mbuf initial:: ");
-			for (uint i = 0; i < 16; i++) {
-			    printf("%02x ", ((uint8_t *)mbuf->buf_addr)[i]);
-			}
-			printf("\n");
-
-		}
 		struct ena_com_buf ebuf;
 
 		if (likely((i + 4) < count))
