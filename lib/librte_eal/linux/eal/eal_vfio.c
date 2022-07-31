@@ -1649,6 +1649,7 @@ container_dma_map(struct vfio_config *vfio_cfg, uint64_t vaddr, uint64_t iova,
 	struct user_mem_map *new_map;
 	struct user_mem_maps *user_mem_maps;
 	int ret = 0;
+	printf("Container map dma: 0x%lx, 0x%lx 0x%lx, 0x%lx\n", (uint64_t)vfio_cfg, vaddr, iova, len);
 
 	user_mem_maps = &vfio_cfg->mem_maps;
 	rte_spinlock_recursive_lock(&user_mem_maps->lock);
