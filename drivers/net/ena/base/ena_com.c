@@ -1378,9 +1378,8 @@ int ena_com_execute_admin_command(struct ena_com_admin_queue *admin_queue,
 		else
 			ena_trc_dbg("Failed to process command. ret = %d\n",
 				    ret);
-	} else {
-		printf("ENA processed admin command successfully\n");
 	}
+
 	return ret;
 }
 
