@@ -368,10 +368,14 @@ rte_mempool_populate_virt(struct rte_mempool *mp, char *addr,
 	int ret, cnt = 0;
 
 	/* address and len must be page-aligned */
-	if (RTE_PTR_ALIGN_CEIL(addr, pg_sz) != addr)
+	if (RTE_PTR_ALIGN_CEIL(addr, pg_sz) != addr) {
+		printf("rte_mempool_populate_virt invalid 1\n");
 		return -EINVAL;
-	if (RTE_ALIGN_CEIL(len, pg_sz) != len)
+	}
+	if (RTE_ALIGN_CEIL(len, pg_sz) != len) {
+		printf("rte_mempool_populate_virt invalid 2\n");
 		return -EINVAL;
+	}
 
 	if (mp->flags & MEMPOOL_F_NO_IOVA_CONTIG)
 		return rte_mempool_populate_iova(mp, addr, RTE_BAD_IOVA,
@@ -383,6 +387,7 @@ rte_mempool_populate_virt(struct rte_mempool *mp, char *addr,
 		iova = rte_mem_virt2iova(addr + off);
 
 		if (iova == RTE_BAD_IOVA && rte_eal_has_hugepages()) {
+			printf("rte_mempool_populate_virt invalid 3\n");
 			ret = -EINVAL;
 			goto fail;
 		}
@@ -594,7 +599,7 @@ rte_mempool_populate_default(struct rte_mempool *mp)
 			iova = mz->iova;
 
 		if (no_pageshift || try_contig) {
-			printf("populate_default: populate_iova: 0x%lx\n", pg_sz);
+			printf("populate_default: populate_iova: 0x%lx 0x%lx\n", pg_sz, (uint64_t)iova);
 			ret = rte_mempool_populate_iova(mp, mz->addr,
 				iova, mz->len,
 				rte_mempool_memchunk_mz_free,
