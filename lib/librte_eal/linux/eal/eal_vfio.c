@@ -1266,7 +1266,7 @@ vfio_type1_dma_mem_map(int vfio_container_fd, uint64_t vaddr, uint64_t iova,
 
 		ret = ioctl(vfio_container_fd, VFIO_IOMMU_MAP_DMA, &dma_map);
 		if (ret) {
-			printf("vfio_type1_dma_mem_map: %d\n", ret);
+			printf("vfio_type1_dma_mem_map: %d, %d, %s\n", ret, errno, strerror(errno));
 			/**
 			 * In case the mapping was already done EEXIST will be
 			 * returned from kernel.
