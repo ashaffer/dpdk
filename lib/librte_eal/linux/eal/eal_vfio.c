@@ -1247,6 +1247,7 @@ type1_map(const struct rte_memseg_list *msl, const struct rte_memseg *ms,
 	if (msl->external)
 		return 0;
 
+	printf("type1_map: 0x%lx, 0x%lx, 0x%lx\n", ms->addr_64, ms->iova, ms->len);
 	return vfio_type1_dma_mem_map(*vfio_container_fd, ms->addr_64, ms->iova,
 			ms->len, 1);
 }
