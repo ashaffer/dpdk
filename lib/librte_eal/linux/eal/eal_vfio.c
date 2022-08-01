@@ -1316,6 +1316,7 @@ static int
 vfio_spapr_dma_do_map(int vfio_container_fd, uint64_t vaddr, uint64_t iova,
 		uint64_t len, int do_map)
 {
+	printf("vfio_spapr_dma_do_map called: %d\n", vfio_container_fd);
 	struct vfio_iommu_type1_dma_map dma_map;
 	struct vfio_iommu_type1_dma_unmap dma_unmap;
 	int ret;
