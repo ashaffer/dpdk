@@ -740,8 +740,10 @@ rte_vfio_setup_device(const char *sysfs_base, const char *dev_addr,
 			 * after registering callback, to prevent races
 			 */
 			rte_rwlock_read_lock(mem_lock);
-			if (vfio_cfg == default_vfio_cfg)
+			if (vfio_cfg == default_vfio_cfg) {
+				printf("Mapping for vfio_container_id: %d\n", vfio_container_fd);
 				ret = t->dma_map_func(vfio_container_fd);
+			}
 			else
 				ret = 0;
 			if (ret) {
@@ -1265,7 +1267,7 @@ vfio_type1_dma_mem_map(int vfio_container_fd, uint64_t vaddr, uint64_t iova,
 				VFIO_DMA_MAP_FLAG_WRITE;
 
 		ret = ioctl(vfio_container_fd, VFIO_IOMMU_MAP_DMA, &dma_map);
-		printf("vfio_type1_dma_mem_map: %d, %d, %s\n", ret, errno, strerror(errno));
+		printf("vfio_type1_dma_mem_map: %d, %d, %d, %s\n", vfio_container_fd, ret, errno, strerror(errno));
 
 		if (ret) {
 			/**
@@ -1767,6 +1769,7 @@ rte_vfio_dma_map(uint64_t vaddr, uint64_t iova, uint64_t len)
 		return -1;
 	}
 
+	printf("rte_vfio_dma_map default_vfio_cfg: %d\n", default_vfio_cfg->vfio_container_fd);
 	return container_dma_map(default_vfio_cfg, vaddr, iova, len);
 }
 
