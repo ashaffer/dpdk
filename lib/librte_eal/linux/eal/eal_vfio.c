@@ -743,6 +743,7 @@ rte_vfio_setup_device(const char *sysfs_base, const char *dev_addr,
 			if (vfio_cfg == default_vfio_cfg) {
 				printf("Mapping for vfio_container_id: %d\n", vfio_container_fd);
 				ret = t->dma_map_func(vfio_container_fd);
+				printf("Post mapping\n");
 			}
 			else
 				ret = 0;
@@ -769,11 +770,12 @@ rte_vfio_setup_device(const char *sysfs_base, const char *dev_addr,
 			for (i = 0; i < user_mem_maps->n_maps; i++) {
 				struct user_mem_map *map;
 				map = &user_mem_maps->maps[i];
-
+				printf("Calling user_map_func: %d\n", vfio_container_fd);
 				ret = t->dma_user_map_func(
 						vfio_container_fd,
 						map->addr, map->iova, map->len,
 						1);
+				printf("Post user map func\n");
 				if (ret) {
 					RTE_LOG(ERR, EAL, "Couldn't map user memory for DMA: "
 							"va: 0x%" PRIx64 " "
