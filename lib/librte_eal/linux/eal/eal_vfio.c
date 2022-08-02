@@ -741,9 +741,7 @@ rte_vfio_setup_device(const char *sysfs_base, const char *dev_addr,
 			 */
 			rte_rwlock_read_lock(mem_lock);
 			if (vfio_cfg == default_vfio_cfg) {
-				printf("Mapping for vfio_container_id: %d\n", vfio_container_fd);
 				ret = t->dma_map_func(vfio_container_fd);
-				printf("Post mapping\n");
 			}
 			else
 				ret = 0;
@@ -770,12 +768,11 @@ rte_vfio_setup_device(const char *sysfs_base, const char *dev_addr,
 			for (i = 0; i < user_mem_maps->n_maps; i++) {
 				struct user_mem_map *map;
 				map = &user_mem_maps->maps[i];
-				printf("Calling user_map_func: %d\n", vfio_container_fd);
 				ret = t->dma_user_map_func(
 						vfio_container_fd,
 						map->addr, map->iova, map->len,
 						1);
-				printf("Post user map func\n");
+
 				if (ret) {
 					RTE_LOG(ERR, EAL, "Couldn't map user memory for DMA: "
 							"va: 0x%" PRIx64 " "
@@ -1247,7 +1244,6 @@ type1_map(const struct rte_memseg_list *msl, const struct rte_memseg *ms,
 	if (msl->external)
 		return 0;
 
-	printf("type1_map: 0x%lx, 0x%lx, 0x%lx\n", ms->addr_64, ms->iova, ms->len);
 	return vfio_type1_dma_mem_map(*vfio_container_fd, ms->addr_64, ms->iova,
 			ms->len, 1);
 }
@@ -1270,7 +1266,6 @@ vfio_type1_dma_mem_map(int vfio_container_fd, uint64_t vaddr, uint64_t iova,
 				VFIO_DMA_MAP_FLAG_WRITE;
 
 		ret = ioctl(vfio_container_fd, VFIO_IOMMU_MAP_DMA, &dma_map);
-		printf("vfio_type1_dma_mem_map: %d, %d, %d, %s\n", vfio_container_fd, ret, errno, strerror(errno));
 
 		if (ret) {
 			/**
@@ -1317,7 +1312,6 @@ static int
 vfio_spapr_dma_do_map(int vfio_container_fd, uint64_t vaddr, uint64_t iova,
 		uint64_t len, int do_map)
 {
-	printf("vfio_spapr_dma_do_map called: %d\n", vfio_container_fd);
 	struct vfio_iommu_type1_dma_map dma_map;
 	struct vfio_iommu_type1_dma_unmap dma_unmap;
 	int ret;
@@ -1646,7 +1640,6 @@ vfio_dma_mem_map(struct vfio_config *vfio_cfg, uint64_t vaddr, uint64_t iova,
 		return -1;
 	}
 
-	printf("vfio_dma_mem_map: 0x%lx 0x%lx\n", vaddr, iova);
 	return t->dma_user_map_func(vfio_cfg->vfio_container_fd, vaddr, iova,
 			len, do_map);
 }
@@ -1658,7 +1651,6 @@ container_dma_map(struct vfio_config *vfio_cfg, uint64_t vaddr, uint64_t iova,
 	struct user_mem_map *new_map;
 	struct user_mem_maps *user_mem_maps;
 	int ret = 0;
-	printf("Container map dma: 0x%lx, 0x%lx 0x%lx, 0x%lx\n", (uint64_t)vfio_cfg, vaddr, iova, len);
 
 	user_mem_maps = &vfio_cfg->mem_maps;
 	rte_spinlock_recursive_lock(&user_mem_maps->lock);
@@ -1773,7 +1765,6 @@ rte_vfio_dma_map(uint64_t vaddr, uint64_t iova, uint64_t len)
 		return -1;
 	}
 
-	printf("rte_vfio_dma_map default_vfio_cfg: %d\n", default_vfio_cfg->vfio_container_fd);
 	return container_dma_map(default_vfio_cfg, vaddr, iova, len);
 }
 
