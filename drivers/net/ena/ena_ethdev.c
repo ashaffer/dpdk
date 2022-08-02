@@ -2300,7 +2300,7 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 
 		printf("Transmitting packet: ");
 		for (uint j = 0; j < mbuf->buf_len; j++) {
-			printf(" %02x", mbuf->buf_addr[j]);
+			printf(" %02x", ((char *)mbuf->buf_addr)[j]);
 		}
 		printf("\n");
 
