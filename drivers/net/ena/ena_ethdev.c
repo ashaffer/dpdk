@@ -251,8 +251,6 @@ static int ena_xstats_get_by_id(struct rte_eth_dev *dev,
 				uint64_t *values,
 				unsigned int n);
 
-static void print_backtrace (void);
-
 static const struct eth_dev_ops ena_dev_ops = {
 	.dev_configure        = ena_dev_configure,
 	.dev_infos_get        = ena_infos_get,
@@ -1200,7 +1198,6 @@ static int ena_queue_start(struct ena_ring *ring)
 	rc = ena_create_io_queue(ring);
 	if (rc) {
 		PMD_INIT_LOG(ERR, "Failed to create IO queue!");
-		print_backtrace();
 		return rc;
 	}
 
