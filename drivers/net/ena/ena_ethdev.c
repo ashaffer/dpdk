@@ -2298,6 +2298,12 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 		tx_info->num_of_bufs = 0;
 		ebuf = tx_info->bufs;
 
+		printf("Transmitting packet: ");
+		for (uint j = 0; j < mbuf->buf_len; j++) {
+			printf(" %02x", mbuf->buf_addr[j]);
+		}
+		printf("\n");
+
 		/* Prepare TX context */
 		memset(&ena_tx_ctx, 0x0, sizeof(struct ena_com_tx_ctx));
 		memset(&ena_tx_ctx.ena_meta, 0x0,
