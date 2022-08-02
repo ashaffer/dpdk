@@ -798,7 +798,7 @@ static int ena_queue_start_all(struct rte_eth_dev *dev,
 		queues = adapter->tx_ring;
 		nb_queues = dev->data->nb_tx_queues;
 	}
-	printf("Attempting to start %d queues of type %d\n", nb_queues, (int)ring_type);
+
 	for (i = 0; i < nb_queues; i++) {
 		if (queues[i].configured) {
 			if (ring_type == ENA_RING_TYPE_RX) {
@@ -818,8 +818,6 @@ static int ena_queue_start_all(struct rte_eth_dev *dev,
 					     "failed to start queue %d type(%d)",
 					     i, ring_type);
 				goto err;
-			} else {
-				printf("\tstarted queue %d type(%d)\n", i, (int)ring_type);
 			}
 		}
 	}
@@ -1046,14 +1044,10 @@ static int ena_start(struct rte_eth_dev *dev)
 	rc = ena_queue_start_all(dev, ENA_RING_TYPE_RX);
 	if (rc)
 		return rc;
-	else
-		printf("Successfully started RX queues\n");
 
 	rc = ena_queue_start_all(dev, ENA_RING_TYPE_TX);
 	if (rc)
 		goto err_start_tx;
-	else
-		printf("Successfully started TX queues\n");
 
 	if (adapter->rte_dev->data->dev_conf.rxmode.mq_mode &
 	    ETH_MQ_RX_RSS_FLAG && adapter->rte_dev->data->nb_rx_queues > 0) {
@@ -1194,25 +1188,6 @@ static void ena_queue_stop_all(struct rte_eth_dev *dev,
 	for (i = 0; i < nb_queues; ++i)
 		if (queues[i].configured)
 			ena_queue_stop(&queues[i]);
-}
-
-static void print_backtrace (void) {
-	void *buffer[100];
-	char **strings;
-	uint nptrs = backtrace(buffer, 100);
-
-	strings = backtrace_symbols(buffer, nptrs);
-	if (strings == NULL) {
-		printf("Failed to generate symbol backtrace\n");
-		return;
-	}
-
-	printf("Callstack:\n");
-	for (uint i = 0; i < nptrs; i++) {
-		printf("%s\n", strings[i]);
-	}
-
-	free(strings);
 }
 
 static int ena_queue_start(struct ena_ring *ring)
@@ -1428,7 +1403,6 @@ static int ena_populate_rx_queue(struct ena_ring *rxq, unsigned int count)
 	uint16_t next_to_use = rxq->next_to_use;
 	uint16_t in_use, req_id;
 	struct rte_mbuf **mbufs = rxq->rx_refill_buffer;
-	printf("ena_populate_rx_queue: 0x%lx, 0x%lx\n", (uint64_t)mbufs, (uint64_t)rxq->mb_pool);
 
 	if (unlikely(!count))
 		return 0;
@@ -1444,14 +1418,6 @@ static int ena_populate_rx_queue(struct ena_ring *rxq, unsigned int count)
 		PMD_RX_LOG(DEBUG, "there are no enough free buffers");
 		return 0;
 	}
-
-	struct rte_mbuf *mb = mbufs[768];
-	printf("populating mbuf: 0x%lx (0x%lx, 0x%lx, 0x%lx)\n", (uint64_t)mb, (uint64_t)mb->buf_addr, (uint64_t)mb->buf_iova, rte_mem_virt2iova(mb->buf_addr));
-	printf("mbuf initial:: ");
-	for (uint j = 0; j < 16; j++) {
-	    printf("%02x ", ((uint8_t *)mb->buf_addr)[j]);
-	}
-	printf("\n");
 
 	for (i = 0; i < count; i++) {
 		uint16_t next_to_use_masked = next_to_use & ring_mask;
@@ -1482,7 +1448,6 @@ static int ena_populate_rx_queue(struct ena_ring *rxq, unsigned int count)
 	}
 
 	if (unlikely(i < count)) {
-		printf("Allocating additional mbufs\n");
 		RTE_LOG(WARNING, PMD, "refilled rx qid %d with only %d "
 			"buffers (from %d)\n", rxq->id, i, count);
 		rte_mempool_put_bulk(rxq->mb_pool, (void **)(&mbufs[i]),
@@ -2104,15 +2069,10 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		if (unlikely(ena_rx_ctx.descs == 0))
 			break;
 
-		if (completed == 0) {
-			printf("eth_ena_recv_pkts: 0x%lx, 0x%lx\n", (uint64_t)rx_buff_info[0], (uint64_t)rx_buff_info[1]);
-		}
-
 		while (segments < ena_rx_ctx.descs) {
 			req_id = ena_rx_ctx.ena_bufs[segments].req_id;
 			rc = validate_rx_req_id(rx_ring, req_id);
 			if (unlikely(rc)) {
-				printf("validate_rx_req_id failed: %u\n", (uint)rc);
 				if (segments != 0)
 					rte_mbuf_raw_free(mbuf_head);
 				break;
@@ -2125,13 +2085,11 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 			mbuf->refcnt = 1;
 			mbuf->next = NULL;
 			if (unlikely(segments == 0)) {
-				printf("zero segments: %u\n", req_id);
 				mbuf->nb_segs = ena_rx_ctx.descs;
 				mbuf->port = rx_ring->port_id;
 				mbuf->pkt_len = 0;
 				mbuf_head = mbuf;
 			} else {
-				printf("non-zero segments: %u\n", req_id);
 				/* for multi-segment pkts create mbuf chain */
 				mbuf_prev->next = mbuf;
 			}
@@ -2149,18 +2107,9 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		/* fill mbuf attributes if any */
 		ena_rx_mbuf_prepare(mbuf_head, &ena_rx_ctx);
 
-		char *d = rte_pktmbuf_mtod(mbuf_head, char *);
-		int sz = rte_pktmbuf_data_len(mbuf_head);
-		printf("ENA Received packet 0x%lx 0x%lx  0x%lx 0x%04x: ", (uint64_t)mbuf, (uint64_t)mbuf_head->buf_addr, mbuf_head->buf_iova, mbuf_head->data_off);
-		for (int i = 0; i < sz; i++) {
-		    printf("%02x ", (uint8_t)d[i]);
-		}
-		printf("\n");
-
 		if (unlikely(mbuf_head->ol_flags &
 			(PKT_RX_IP_CKSUM_BAD | PKT_RX_L4_CKSUM_BAD))) {
 			++rx_ring->rx_stats.bad_csum;
-			printf("Bad L4 checksum on packet\n");
 		}
 
 		mbuf_head->hash.rss = ena_rx_ctx.hash;
@@ -2177,7 +2126,6 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 	desc_in_use = desc_in_use - completed + 1;
 	/* Burst refill to save doorbells, memory barriers, const interval */
 	if (ring_size - desc_in_use > ENA_RING_DESCS_RATIO(ring_size)) {
-		printf("Burst refill\n");
 		ena_com_update_dev_comp_head(rx_ring->ena_com_io_cq);
 		ena_populate_rx_queue(rx_ring, ring_size - desc_in_use);
 	}
@@ -2342,14 +2290,6 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 	for (sent_idx = 0; sent_idx < nb_pkts; sent_idx++) {
 		mbuf = tx_pkts[sent_idx];
 		total_length = 0;
-
-		char *d = rte_pktmbuf_mtod(mbuf, char *);
-		uint sz = rte_pktmbuf_data_len(mbuf);
-		printf("ENA Sending packet: ");
-		for (uint i = 0; i < sz; i++) {
-		    printf("%02x ", (uint8_t)d[i]);
-		}
-		printf("\n");
 
 		rc = ena_check_and_linearize_mbuf(tx_ring, mbuf);
 		if (unlikely(rc))

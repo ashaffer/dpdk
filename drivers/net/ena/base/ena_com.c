@@ -1371,7 +1371,6 @@ int ena_com_execute_admin_command(struct ena_com_admin_queue *admin_queue,
 
 	ret = ena_com_wait_and_process_admin_cq(comp_ctx, admin_queue);
 	if (unlikely(ret)) {
-		printf("ENA failed to process command: %d\n", ret);
 		if (admin_queue->running_state)
 			ena_trc_err("Failed to process command. ret = %d\n",
 				    ret);
