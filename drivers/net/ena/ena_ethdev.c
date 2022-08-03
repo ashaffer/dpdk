@@ -2343,8 +2343,10 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 		ena_tx_mbuf_prepare(mbuf, &ena_tx_ctx, tx_ring->offloads);
 
 		if (unlikely(mbuf->ol_flags &
-			     (PKT_RX_L4_CKSUM_BAD | PKT_RX_IP_CKSUM_BAD)))
+			     (PKT_RX_L4_CKSUM_BAD | PKT_RX_IP_CKSUM_BAD))) {
+			printf("L4 checksum errors\n");
 			rte_atomic64_inc(&tx_ring->adapter->drv_stats->ierrors);
+		}
 
 		rte_prefetch0(tx_pkts[(sent_idx + 4) & ring_mask]);
 
@@ -2363,6 +2365,7 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 
 		while ((mbuf = mbuf->next) != NULL) {
 			seg_len = mbuf->data_len;
+			printf("mbuf\n");
 
 			/* Skip mbufs if whole data is pushed as a header */
 			if (unlikely(delta > seg_len)) {
@@ -2387,6 +2390,7 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 				" achieved, writing doorbell to send burst\n",
 				tx_ring->id);
 			rte_wmb();
+			printf("doorbell1\n");
 			ena_com_write_sq_doorbell(tx_ring->ena_com_io_sq);
 		}
 
@@ -2394,6 +2398,7 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 		rc = ena_com_prepare_tx(tx_ring->ena_com_io_sq,
 					&ena_tx_ctx, &nb_hw_desc);
 		if (unlikely(rc)) {
+			printf("tx_ring prepare ctx error\n");
 			++tx_ring->tx_stats.prepare_ctx_err;
 			break;
 		}
@@ -2410,6 +2415,7 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 	if (sent_idx > 0) {
 		/* ...let HW do its best :-) */
 		rte_wmb();
+		printf("doorbell2\n");
 		ena_com_write_sq_doorbell(tx_ring->ena_com_io_sq);
 		tx_ring->tx_stats.doorbells++;
 		tx_ring->next_to_use = next_to_use;
@@ -2418,12 +2424,15 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 	/* Clear complete packets  */
 	while (ena_com_tx_comp_req_id_get(tx_ring->ena_com_io_cq, &req_id) >= 0) {
 		rc = validate_tx_req_id(tx_ring, req_id);
-		if (rc)
+		if (rc) {
+			printf("validate_tx_req_id: %d\n", rc);
 			break;
+		}
 
 		/* Get Tx info & store how many descs were processed  */
 		tx_info = &tx_ring->tx_buffer_info[req_id];
 		total_tx_descs += tx_info->tx_descs;
+		printf("total_tx_descs: %u\n", total_tx_descs);
 
 		/* Free whole mbuf chain  */
 		mbuf = tx_info->mbuf;
