@@ -2066,6 +2066,7 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		if (unlikely(ena_rx_ctx.descs == 0))
 			break;
 
+		printf("ena received packet\n");
 		while (segments < ena_rx_ctx.descs) {
 			req_id = ena_rx_ctx.ena_bufs[segments].req_id;
 			rc = validate_rx_req_id(rx_ring, req_id);
