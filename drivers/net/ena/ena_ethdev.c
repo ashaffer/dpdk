@@ -2299,7 +2299,7 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 		tx_info->num_of_bufs = 0;
 		ebuf = tx_info->bufs;
 
-		printf("Transmitting packet %d, %d:", mbuf->data_len, mbuf->data_off);
+		printf("Transmitting packet %d, %d, 0x%lx:", mbuf->data_len, mbuf->data_off, (uint64_t)((char *)mbuf->buf_addr + mbuf->data_off));
 		for (uint j = mbuf->data_off; j < mbuf->data_off + mbuf->data_len; j++) {
 			printf(" %02x", (uint8_t)((char *)mbuf->buf_addr)[j]);
 		}
