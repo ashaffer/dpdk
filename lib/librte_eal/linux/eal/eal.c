@@ -1104,12 +1104,13 @@ rte_eal_init(int argc, char **argv)
 	 * not present in primary processes, so to avoid any potential issues,
 	 * initialize memzones first.
 	 */
+	printf("pre memzone init\n");
 	if (rte_eal_memzone_init() < 0) {
 		rte_eal_init_alert("Cannot init memzone");
 		rte_errno = ENODEV;
 		return -1;
 	}
-
+	printf("post memzone init\n");
 	if (rte_eal_memory_init() < 0) {
 		rte_eal_init_alert("Cannot init memory");
 		rte_errno = ENOMEM;
