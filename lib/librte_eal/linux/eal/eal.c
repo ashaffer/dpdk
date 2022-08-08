@@ -1117,31 +1117,35 @@ rte_eal_init(int argc, char **argv)
 		return -1;
 	}
 
+	printf("a\n");
 	/* the directories are locked during eal_hugepage_info_init */
 	eal_hugedirs_unlock();
+	printf("b\n");
 
 	if (rte_eal_malloc_heap_init() < 0) {
 		rte_eal_init_alert("Cannot init malloc heap");
 		rte_errno = ENODEV;
 		return -1;
 	}
+	printf("c\n");
 
 	if (rte_eal_tailqs_init() < 0) {
 		rte_eal_init_alert("Cannot init tail queues for objects");
 		rte_errno = EFAULT;
 		return -1;
 	}
+	printf("d\n");
 
 	if (rte_eal_timer_init() < 0) {
 		rte_eal_init_alert("Cannot init HPET or TSC timers");
 		rte_errno = ENOTSUP;
 		return -1;
 	}
-
+	printf("e\n");
 	eal_check_mem_on_local_socket();
 
 	eal_thread_init_master(rte_config.master_lcore);
-
+	printf("f\n");
 	ret = eal_thread_dump_affinity(cpuset, sizeof(cpuset));
 
 	RTE_LOG(DEBUG, EAL, "Master lcore %u is ready (tid=%zx;cpuset=[%s%s])\n",
@@ -1176,14 +1180,14 @@ rte_eal_init(int argc, char **argv)
 			RTE_LOG(DEBUG, EAL,
 				"Cannot set name for lcore thread\n");
 	}
-
+	printf("g\n");
 	/*
 	 * Launch a dummy function on all slave lcores, so that master lcore
 	 * knows they are all ready when this function returns.
 	 */
 	rte_eal_mp_remote_launch(sync_func, NULL, SKIP_MASTER);
 	rte_eal_mp_wait_lcore();
-
+	printf("h\n");
 	/* initialize services so vdevs register service during bus_probe. */
 	ret = rte_service_init();
 	if (ret) {
@@ -1198,7 +1202,7 @@ rte_eal_init(int argc, char **argv)
 		rte_errno = ENOTSUP;
 		return -1;
 	}
-
+	printf("i\n");
 #ifdef VFIO_PRESENT
 	/* Register mp action after probe() so that we got enough info */
 	if (rte_vfio_is_enabled("vfio") && vfio_mp_sync_setup() < 0)
@@ -1213,7 +1217,7 @@ rte_eal_init(int argc, char **argv)
 		rte_errno = ENOEXEC;
 		return -1;
 	}
-
+	printf("j\n");
 	/*
 	 * Clean up unused files in runtime directory. We do this at the end of
 	 * init and not at the beginning because we want to clean stuff up
@@ -1228,11 +1232,12 @@ rte_eal_init(int argc, char **argv)
 		rte_eal_init_alert("Cannot clear runtime directory\n");
 		return -1;
 	}
-
+	printf("k\n");
 	rte_eal_mcfg_complete();
-
+	printf("l\n");
 	/* Call each registered callback, if enabled */
 	rte_option_init();
+	printf("m\n");
 
 	return fctret;
 }
