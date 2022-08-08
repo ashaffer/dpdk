@@ -2066,7 +2066,6 @@ static uint16_t eth_ena_recv_pkts(void *rx_queue, struct rte_mbuf **rx_pkts,
 		if (unlikely(ena_rx_ctx.descs == 0))
 			break;
 
-		printf("ena received packet\n");
 		while (segments < ena_rx_ctx.descs) {
 			req_id = ena_rx_ctx.ena_bufs[segments].req_id;
 			rc = validate_rx_req_id(rx_ring, req_id);
@@ -2299,11 +2298,11 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 		tx_info->num_of_bufs = 0;
 		ebuf = tx_info->bufs;
 
-		printf("Transmitting packet %d, %d, 0x%lx:", mbuf->data_len, mbuf->data_off, (uint64_t)((char *)mbuf->buf_addr + mbuf->data_off));
-		for (uint j = mbuf->data_off; j < mbuf->data_off + mbuf->data_len; j++) {
-			printf(" %02x", (uint8_t)((char *)mbuf->buf_addr)[j]);
-		}
-		printf("\n");
+		// printf("Transmitting packet %d, %d, 0x%lx:", mbuf->data_len, mbuf->data_off, (uint64_t)((char *)mbuf->buf_addr + mbuf->data_off));
+		// for (uint j = mbuf->data_off; j < mbuf->data_off + mbuf->data_len; j++) {
+		// 	printf(" %02x", (uint8_t)((char *)mbuf->buf_addr)[j]);
+		// }
+		// printf("\n");
 
 		/* Prepare TX context */
 		memset(&ena_tx_ctx, 0x0, sizeof(struct ena_com_tx_ctx));
@@ -2365,7 +2364,6 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 
 		while ((mbuf = mbuf->next) != NULL) {
 			seg_len = mbuf->data_len;
-			printf("mbuf\n");
 
 			/* Skip mbufs if whole data is pushed as a header */
 			if (unlikely(delta > seg_len)) {
@@ -2390,7 +2388,6 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 				" achieved, writing doorbell to send burst\n",
 				tx_ring->id);
 			rte_wmb();
-			printf("doorbell1\n");
 			ena_com_write_sq_doorbell(tx_ring->ena_com_io_sq);
 		}
 
@@ -2415,7 +2412,6 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 	if (sent_idx > 0) {
 		/* ...let HW do its best :-) */
 		rte_wmb();
-		printf("doorbell2\n");
 		ena_com_write_sq_doorbell(tx_ring->ena_com_io_sq);
 		tx_ring->tx_stats.doorbells++;
 		tx_ring->next_to_use = next_to_use;
@@ -2432,7 +2428,6 @@ static uint16_t eth_ena_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts,
 		/* Get Tx info & store how many descs were processed  */
 		tx_info = &tx_ring->tx_buffer_info[req_id];
 		total_tx_descs += tx_info->tx_descs;
-		printf("total_tx_descs: %u\n", total_tx_descs);
 
 		/* Free whole mbuf chain  */
 		mbuf = tx_info->mbuf;
