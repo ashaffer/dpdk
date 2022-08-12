@@ -125,20 +125,16 @@ rte_pci_probe_one_driver(struct rte_pci_driver *dr,
 	int ret;
 	bool already_probed;
 	struct rte_pci_addr *loc;
-	printf("rte_pci_probe_one_driver\n");
-	if ((dr == NULL) || (dev == NULL)) {
-		printf("\terror invalid\n");
+
+	if ((dr == NULL) || (dev == NULL))
 		return -EINVAL;
-	}
 
 	loc = &dev->addr;
 
 	/* The device is not blacklisted; Check if driver supports it */
-	if (!rte_pci_match(dr, dev)) {
+	if (!rte_pci_match(dr, dev))
 		/* Match of device and driver failed */
-		printf("\tnot rte_pti_match\n");
 		return 1;
-	}
 
 	RTE_LOG(INFO, EAL, "PCI device "PCI_PRI_FMT" on NUMA socket %i\n",
 			loc->domain, loc->bus, loc->devid, loc->function,
@@ -259,10 +255,8 @@ pci_probe_all_drivers(struct rte_pci_device *dev)
 	if (dev == NULL)
 		return -EINVAL;
 
-	printf("pci_probe_all_drivers\n");
 	FOREACH_DRIVER_ON_PCIBUS(dr) {
 		rc = rte_pci_probe_one_driver(dr, dev);
-		printf("\tforeach probe driver: %d\n", rc);
 		if (rc < 0)
 			/* negative value is an error */
 			return rc;
