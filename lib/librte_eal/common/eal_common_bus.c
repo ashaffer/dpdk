@@ -47,6 +47,7 @@ static struct rte_bus_list rte_bus_list =
 void
 rte_bus_register(struct rte_bus *bus)
 {
+	printf("rte_bus_register\n");
 	RTE_VERIFY(bus);
 	RTE_VERIFY(bus->name && strlen(bus->name));
 	/* A bus should mandatorily have the scan implemented */
