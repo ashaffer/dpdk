@@ -92,7 +92,9 @@ rte_bus_probe(void)
 	struct rte_bus *bus, *vbus = NULL;
 
 	TAILQ_FOREACH(bus, &rte_bus_list, next) {
+		printf("rte_bus_probe foreach\n");
 		if (!strcmp(bus->name, "vdev")) {
+			printf("\tskipping vdev\n");
 			vbus = bus;
 			continue;
 		}

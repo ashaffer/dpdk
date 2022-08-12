@@ -1192,12 +1192,13 @@ rte_eal_init(int argc, char **argv)
 	}
 
 	/* Probe all the buses and devices/drivers on them */
+	printf("pre rte_bus_probe\n");
 	if (rte_bus_probe()) {
 		rte_eal_init_alert("Cannot probe devices");
 		rte_errno = ENOTSUP;
 		return -1;
 	}
-
+	printf("post bus rte_bus_probe\n");
 #ifdef VFIO_PRESENT
 	/* Register mp action after probe() so that we got enough info */
 	if (rte_vfio_is_enabled("vfio") && vfio_mp_sync_setup() < 0)
