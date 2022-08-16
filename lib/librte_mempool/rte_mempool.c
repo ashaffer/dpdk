@@ -546,7 +546,6 @@ rte_mempool_populate_default(struct rte_mempool *mp)
 		 * memzone flag.
 		 */
 		if (try_contig) {
-			printf("try_contig is true\n");
 			flags |= RTE_MEMZONE_IOVA_CONTIG;
 		}
 
