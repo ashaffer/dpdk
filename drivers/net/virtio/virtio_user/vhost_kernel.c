@@ -188,7 +188,7 @@ vhost_kernel_ioctl(struct virtio_user_dev *dev,
 	unsigned int queue_sel;
 	unsigned int features;
 
-	PMD_DRV_LOG(INFO, "%s", vhost_msg_strings[req]);
+	PMD_DRV_LOG(INFO, "%s", "test"); //vhost_msg_strings[req]);
 
 	req_kernel = vhost_req_user_to_kernel[req];
 
