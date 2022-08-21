@@ -76,6 +76,15 @@
 #include "cmdline_tm.h"
 #include "bpf_cmd.h"
 
+struct mplsoudp_encap_conf mplsoudp_encap_conf;
+struct mplsoudp_decap_conf mplsoudp_decap_conf;
+struct mplsogre_decap_conf mplsogre_decap_conf;
+struct mplsogre_encap_conf mplsogre_encap_conf;
+struct l2_decap_conf l2_decap_conf;
+struct l2_encap_conf l2_encap_conf;
+struct nvgre_encap_conf nvgre_encap_conf;
+struct vxlan_encap_conf vxlan_encap_conf;
+
 static struct cmdline *testpmd_cl;
 
 static void cmd_reconfig_device_queue(portid_t id, uint8_t dev, uint8_t queue);
