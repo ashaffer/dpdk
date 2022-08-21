@@ -49,7 +49,7 @@
 #define VIRTIO_MIN_MTU 68
 #define VIRTIO_MAX_MTU 65535
 
-static const char * const vhost_msg_str[] = {
+static const char * const vhost_message_str[] = {
 	[VHOST_USER_NONE] = "VHOST_USER_NONE",
 	[VHOST_USER_GET_FEATURES] = "VHOST_USER_GET_FEATURES",
 	[VHOST_USER_SET_FEATURES] = "VHOST_USER_SET_FEATURES",
