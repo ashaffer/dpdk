@@ -49,6 +49,8 @@
 
 #define	IGB_FLEX_RAW_NUM	12
 
+struct igb_flow_mem_list igb_flow_list;
+
 /**
  * Please aware there's an asumption for all the parsers.
  * rte_flow_item is using big endian, rte_flow_attr and

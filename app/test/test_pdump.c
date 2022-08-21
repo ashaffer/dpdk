@@ -22,7 +22,7 @@
 		sizeof(ARGV)/(sizeof(ARGV[0])), __func__)
 
 struct rte_ring *ring_server;
-uint16_t portid;
+static uint16_t portid;
 uint16_t flag_for_send_pkts = 1;
 
 int
