@@ -41,6 +41,8 @@ struct null_crypto_session {
 	uint32_t reserved;
 } __rte_cache_aligned;
 
+extern int null_logtype_driver;
+
 /** Set and validate NULL crypto session parameters */
 extern int
 null_crypto_set_session_parameters(struct null_crypto_session *sess,
