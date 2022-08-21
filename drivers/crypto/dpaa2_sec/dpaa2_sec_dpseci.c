@@ -28,6 +28,9 @@
 #include <fsl_dpseci.h>
 #include <fsl_mc_sys.h>
 
+#include <hw/rta/sec_run_time_asm.h>
+static enum rta_sec_era rta_sec_era = RTA_SEC_ERA_8;
+
 #include "dpaa2_sec_priv.h"
 #include "dpaa2_sec_event.h"
 #include "dpaa2_sec_logs.h"
@@ -57,9 +60,6 @@ typedef uint64_t	dma_addr_t;
 #define FLE_SG_MEM_SIZE		2048
 #define SEC_FLC_DHR_OUTBOUND	-114
 #define SEC_FLC_DHR_INBOUND	0
-
-#include <hw/rta/sec_run_time_asm.h>
-static enum rta_sec_era rta_sec_era = RTA_SEC_ERA_8;
 
 static uint8_t cryptodev_driver_id;
 
