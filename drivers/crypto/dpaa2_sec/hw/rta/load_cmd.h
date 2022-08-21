@@ -8,8 +8,6 @@
 #ifndef __RTA_LOAD_CMD_H__
 #define __RTA_LOAD_CMD_H__
 
-extern enum rta_sec_era rta_sec_era;
-
 /* Allowed length and offset masks for each SEC Era in case DST = DCTRL */
 static const uint32_t load_len_mask_allowed[] = {
 	0x000000ee,

@@ -58,7 +58,8 @@ typedef uint64_t	dma_addr_t;
 #define SEC_FLC_DHR_OUTBOUND	-114
 #define SEC_FLC_DHR_INBOUND	0
 
-enum rta_sec_era rta_sec_era = RTA_SEC_ERA_8;
+#include <hw/rta/sec_run_time_asm.h>
+static enum rta_sec_era rta_sec_era = RTA_SEC_ERA_8;
 
 static uint8_t cryptodev_driver_id;
 

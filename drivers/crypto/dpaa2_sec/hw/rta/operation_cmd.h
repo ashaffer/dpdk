@@ -12,8 +12,6 @@
 #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 #endif
 
-extern enum rta_sec_era rta_sec_era;
-
 static inline int
 __rta_alg_aai_aes(uint16_t aai)
 {

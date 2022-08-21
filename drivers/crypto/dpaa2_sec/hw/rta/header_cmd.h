@@ -8,8 +8,6 @@
 #ifndef __RTA_HEADER_CMD_H__
 #define __RTA_HEADER_CMD_H__
 
-extern enum rta_sec_era rta_sec_era;
-
 /* Allowed job header flags for each SEC Era. */
 static const uint32_t job_header_flags[] = {
 	DNR | TD | MTD | SHR | REO,

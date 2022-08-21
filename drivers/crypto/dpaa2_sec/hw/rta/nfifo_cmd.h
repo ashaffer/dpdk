@@ -8,8 +8,6 @@
 #ifndef __RTA_NFIFO_CMD_H__
 #define __RTA_NFIFO_CMD_H__
 
-extern enum rta_sec_era rta_sec_era;
-
 static const uint32_t nfifo_src[][2] = {
 /*1*/	{ IFIFO,       NFIFOENTRY_STYPE_DFIFO },
 	{ OFIFO,       NFIFOENTRY_STYPE_OFIFO },

@@ -8,8 +8,6 @@
 #ifndef __RTA_MATH_CMD_H__
 #define __RTA_MATH_CMD_H__
 
-extern enum rta_sec_era rta_sec_era;
-
 static const uint32_t math_op1[][2] = {
 /*1*/	{ MATH0,     MATH_SRC0_REG0 },
 	{ MATH1,     MATH_SRC0_REG1 },

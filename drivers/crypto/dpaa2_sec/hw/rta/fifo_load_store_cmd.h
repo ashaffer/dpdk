@@ -8,8 +8,6 @@
 #ifndef __RTA_FIFO_LOAD_STORE_CMD_H__
 #define __RTA_FIFO_LOAD_STORE_CMD_H__
 
-extern enum rta_sec_era rta_sec_era;
-
 static const uint32_t fifo_load_table[][2] = {
 /*1*/	{ PKA0,        FIFOLD_CLASS_CLASS1 | FIFOLD_TYPE_PK_A0 },
 	{ PKA1,        FIFOLD_CLASS_CLASS1 | FIFOLD_TYPE_PK_A1 },

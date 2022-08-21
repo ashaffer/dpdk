@@ -8,8 +8,6 @@
 #ifndef __RTA_KEY_CMD_H__
 #define __RTA_KEY_CMD_H__
 
-extern enum rta_sec_era rta_sec_era;
-
 /* Allowed encryption flags for each SEC Era */
 static const uint32_t key_enc_flags[] = {
 	ENC,

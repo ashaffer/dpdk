@@ -8,8 +8,6 @@
 #ifndef __RTA_JUMP_CMD_H__
 #define __RTA_JUMP_CMD_H__
 
-extern enum rta_sec_era rta_sec_era;
-
 static const uint32_t jump_test_cond[][2] = {
 	{ NIFP,     JUMP_COND_NIFP },
 	{ NIP,      JUMP_COND_NIP },

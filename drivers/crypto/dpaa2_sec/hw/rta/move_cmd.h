@@ -24,8 +24,6 @@
 #define __MOVEB		2
 #define __MOVEDW	3
 
-extern enum rta_sec_era rta_sec_era;
-
 static const uint32_t move_src_table[][2] = {
 /*1*/	{ CONTEXT1, MOVE_SRC_CLASS1CTX },
 	{ CONTEXT2, MOVE_SRC_CLASS2CTX },

@@ -8,8 +8,6 @@
 #ifndef __RTA_SEQ_IN_OUT_PTR_CMD_H__
 #define __RTA_SEQ_IN_OUT_PTR_CMD_H__
 
-extern enum rta_sec_era rta_sec_era;
-
 /* Allowed SEQ IN PTR flags for each SEC Era. */
 static const uint32_t seq_in_ptr_flags[] = {
 	RBS | INL | SGF | PRE | EXT | RTO,

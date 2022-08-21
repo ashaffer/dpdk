@@ -8,8 +8,6 @@
 #ifndef __RTA_PROTOCOL_CMD_H__
 #define __RTA_PROTOCOL_CMD_H__
 
-extern enum rta_sec_era rta_sec_era;
-
 static inline int
 __rta_ssl_proto(uint16_t protoinfo)
 {

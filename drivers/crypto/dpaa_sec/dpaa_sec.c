@@ -29,6 +29,9 @@
 #include <fsl_qman.h>
 #include <of.h>
 
+#include <hw/rta/sec_run_time_asm.h>
+static enum rta_sec_era rta_sec_era;
+
 /* RTA header files */
 #include <hw/desc/common.h>
 #include <hw/desc/algo.h>
@@ -38,8 +41,6 @@
 #include <rte_dpaa_bus.h>
 #include <dpaa_sec.h>
 #include <dpaa_sec_log.h>
-
-enum rta_sec_era rta_sec_era;
 
 int dpaa_logtype_sec;
 

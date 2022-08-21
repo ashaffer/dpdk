@@ -11,6 +11,9 @@
 #include <rte_crypto.h>
 #include <rte_security.h>
 
+#include <hw/rta/sec_run_time_asm.h>
+extern enum rta_sec_era rta_sec_era;
+
 #include <caam_jr_config.h>
 #include <caam_jr_hw_specific.h>
 #include <caam_jr_pvt.h>

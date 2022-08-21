@@ -17,6 +17,9 @@
 #include <rte_security_driver.h>
 #include <rte_hexdump.h>
 
+#include <hw/rta/sec_run_time_asm.h>
+enum rta_sec_era rta_sec_era;
+
 #include <caam_jr_capabilities.h>
 #include <caam_jr_config.h>
 #include <caam_jr_hw_specific.h>
@@ -33,8 +36,6 @@
 #define CRYPTODEV_NAME_CAAM_JR_PMD	crypto_caam_jr
 static uint8_t cryptodev_driver_id;
 int caam_jr_logtype;
-
-enum rta_sec_era rta_sec_era;
 
 /* Lists the states possible for the SEC user space driver. */
 enum sec_driver_state_e {
