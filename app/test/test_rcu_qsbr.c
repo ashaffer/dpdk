@@ -37,8 +37,8 @@ static uint32_t *hash_data[TEST_RCU_MAX_LCORE][TOTAL_ENTRY];
 static uint8_t writer_done;
 
 static struct rte_rcu_qsbr *t[TEST_RCU_MAX_LCORE];
-struct rte_hash *h[TEST_RCU_MAX_LCORE];
-char hash_name[TEST_RCU_MAX_LCORE][8];
+static struct rte_hash *h[TEST_RCU_MAX_LCORE];
+static char hash_name[TEST_RCU_MAX_LCORE][8];
 
 static inline int
 get_enabled_cores_mask(void)

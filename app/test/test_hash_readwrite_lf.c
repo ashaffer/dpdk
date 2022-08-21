@@ -48,9 +48,9 @@
 #define WRITE_EXT_BKT 2
 
 #define NUM_TEST 3
-unsigned int rwc_core_cnt[NUM_TEST] = {1, 2, 4};
+static unsigned int rwc_core_cnt[NUM_TEST] = {1, 2, 4};
 
-struct rwc_perf {
+static struct rwc_perf {
 	uint32_t w_no_ks_r_hit[2][NUM_TEST];
 	uint32_t w_no_ks_r_miss[2][NUM_TEST];
 	uint32_t w_ks_r_hit_nsp[2][NUM_TEST];
@@ -88,9 +88,9 @@ static rte_atomic64_t greads;
 static volatile uint8_t writer_done;
 static volatile uint8_t multi_writer_done[4];
 
-uint16_t enabled_core_ids[RTE_MAX_LCORE];
+static uint16_t enabled_core_ids[RTE_MAX_LCORE];
 
-uint8_t *scanned_bkts;
+static uint8_t *scanned_bkts;
 
 static inline uint16_t
 get_short_sig(const hash_sig_t hash)
