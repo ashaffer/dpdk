@@ -582,7 +582,8 @@ iavf_dev_link_update(struct rte_eth_dev *dev,
 	struct rte_eth_link new_link;
 	struct iavf_info *vf = IAVF_DEV_PRIVATE_TO_VF(dev->data->dev_private);
 
-	// Patched to fix uninitialized memory compiler warning/error
+	// Patched to fix uninitialized memory compiler warning/error:
+	// https://mails.dpdk.org/archives/stable/2020-August/024619.html
 	memset(&new_link, 0, sizeof(new_link));
 
 	/* Only read status info stored in VF, and the info is updated
