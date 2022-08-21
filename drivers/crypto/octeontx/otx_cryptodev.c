@@ -16,6 +16,8 @@
 #include "otx_cryptodev_ops.h"
 
 static int otx_cryptodev_logtype;
+int cpt_logtype;
+uint8_t otx_cryptodev_driver_id;
 
 static struct rte_pci_id pci_id_cpt_table[] = {
 	{

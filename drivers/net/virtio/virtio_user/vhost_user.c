@@ -229,21 +229,6 @@ prepare_vhost_memory_user(struct vhost_user_msg *msg, int fds[])
 
 static struct vhost_user_msg m;
 
-const char * const vhost_msg_strings[] = {
-	[VHOST_USER_SET_OWNER] = "VHOST_SET_OWNER",
-	[VHOST_USER_RESET_OWNER] = "VHOST_RESET_OWNER",
-	[VHOST_USER_SET_FEATURES] = "VHOST_SET_FEATURES",
-	[VHOST_USER_GET_FEATURES] = "VHOST_GET_FEATURES",
-	[VHOST_USER_SET_VRING_CALL] = "VHOST_SET_VRING_CALL",
-	[VHOST_USER_SET_VRING_NUM] = "VHOST_SET_VRING_NUM",
-	[VHOST_USER_SET_VRING_BASE] = "VHOST_SET_VRING_BASE",
-	[VHOST_USER_GET_VRING_BASE] = "VHOST_GET_VRING_BASE",
-	[VHOST_USER_SET_VRING_ADDR] = "VHOST_SET_VRING_ADDR",
-	[VHOST_USER_SET_VRING_KICK] = "VHOST_SET_VRING_KICK",
-	[VHOST_USER_SET_MEM_TABLE] = "VHOST_SET_MEM_TABLE",
-	[VHOST_USER_SET_VRING_ENABLE] = "VHOST_SET_VRING_ENABLE",
-};
-
 static int
 vhost_user_sock(struct virtio_user_dev *dev,
 		enum vhost_user_request req,
