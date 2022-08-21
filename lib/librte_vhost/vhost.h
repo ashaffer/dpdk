@@ -88,8 +88,6 @@ struct vring_used_elem_packed {
 	uint32_t count;
 };
 
-extern const char * const vhost_msg_strings[VHOST_USER_MAX];
-
 /**
  * Structure contains variables relevant to RX/TX virtqueues.
  */
