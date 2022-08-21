@@ -75,6 +75,7 @@ ifeq ($(shell test $(GCC_VERSION) -ge 100 && echo 1), 1)
 # FIXME: Bugzilla 396
 WERROR_FLAGS += -Wno-zero-length-bounds
 WERROR_FLAGS += -Wno-array-bounds
+WERROR_FLAGS += -Wno-stringop-overflow
 endif
 
 HOST_WERROR_FLAGS := $(WERROR_FLAGS)

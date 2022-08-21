@@ -152,6 +152,7 @@ if cc.get_id() == 'gcc' and cc.version().version_compare('>=10.0')
 # FIXME: Bugzilla 396
 	warning_flags += '-Wno-zero-length-bounds'
 	warning_flags += '-Wno-array-bounds'
+	warning_flags += '-Wno-stringop-overflow'
 endif
 
 if not dpdk_conf.get('RTE_ARCH_64')
