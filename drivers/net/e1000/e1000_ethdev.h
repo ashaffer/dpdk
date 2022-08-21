@@ -357,7 +357,7 @@ struct igb_flex_filter_list igb_filter_flex_list;
 TAILQ_HEAD(igb_rss_filter_list, igb_rss_conf_ele);
 struct igb_rss_filter_list igb_filter_rss_list;
 TAILQ_HEAD(igb_flow_mem_list, igb_flow_mem);
-struct igb_flow_mem_list igb_flow_list;
+extern struct igb_flow_mem_list igb_flow_list;
 
 extern const struct rte_flow_ops igb_flow_ops;
 
