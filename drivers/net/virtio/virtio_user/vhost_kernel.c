@@ -40,7 +40,7 @@ struct vhost_memory_kernel {
 
 static uint64_t max_regions = 64;
 
-const char * const vhost_msg_strings[] = {
+static const char * const vhost_msg_strings[] = {
 	[VHOST_USER_NONE] = "VHOST_USER_NONE",
 	[VHOST_USER_GET_FEATURES] = "VHOST_USER_GET_FEATURES",
 	[VHOST_USER_SET_FEATURES] = "VHOST_USER_SET_FEATURES",
