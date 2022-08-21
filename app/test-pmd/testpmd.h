@@ -728,7 +728,7 @@ int port_flow_destroy(portid_t port_id, uint32_t n, const uint32_t *rule);
 int port_flow_flush(portid_t port_id);
 int port_flow_query(portid_t port_id, uint32_t rule,
 		    const struct rte_flow_action *action);
-void port_flow_list(portid_t port_id, uint32_t n, const uint32_t *group);
+void port_flow_list(portid_t port_id, uint32_t n, const uint32_t group[n]);
 int port_flow_isolate(portid_t port_id, int set);
 
 void rx_ring_desc_display(portid_t port_id, queueid_t rxq_id, uint16_t rxd_id);
