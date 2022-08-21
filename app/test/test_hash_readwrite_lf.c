@@ -50,7 +50,7 @@
 #define NUM_TEST 3
 static unsigned int rwc_core_cnt[NUM_TEST] = {1, 2, 4};
 
-static struct rwc_perf {
+struct rwc_perf {
 	uint32_t w_no_ks_r_hit[2][NUM_TEST];
 	uint32_t w_no_ks_r_miss[2][NUM_TEST];
 	uint32_t w_ks_r_hit_nsp[2][NUM_TEST];
