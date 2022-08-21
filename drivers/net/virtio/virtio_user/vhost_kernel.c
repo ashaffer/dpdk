@@ -40,6 +40,22 @@ struct vhost_memory_kernel {
 
 static uint64_t max_regions = 64;
 
+const char * const vhost_msg_strings[] = {
+	[VHOST_USER_SET_OWNER] = "VHOST_SET_OWNER",
+	[VHOST_USER_RESET_OWNER] = "VHOST_RESET_OWNER",
+	[VHOST_USER_SET_FEATURES] = "VHOST_SET_FEATURES",
+	[VHOST_USER_GET_FEATURES] = "VHOST_GET_FEATURES",
+	[VHOST_USER_SET_VRING_CALL] = "VHOST_SET_VRING_CALL",
+	[VHOST_USER_SET_VRING_NUM] = "VHOST_SET_VRING_NUM",
+	[VHOST_USER_SET_VRING_BASE] = "VHOST_SET_VRING_BASE",
+	[VHOST_USER_GET_VRING_BASE] = "VHOST_GET_VRING_BASE",
+	[VHOST_USER_SET_VRING_ADDR] = "VHOST_SET_VRING_ADDR",
+	[VHOST_USER_SET_VRING_KICK] = "VHOST_SET_VRING_KICK",
+	[VHOST_USER_SET_MEM_TABLE] = "VHOST_SET_MEM_TABLE",
+	[VHOST_USER_SET_VRING_ENABLE] = "VHOST_SET_VRING_ENABLE",
+};
+
+
 static void
 get_vhost_kernel_max_regions(void)
 {
@@ -188,7 +204,7 @@ vhost_kernel_ioctl(struct virtio_user_dev *dev,
 	unsigned int queue_sel;
 	unsigned int features;
 
-	PMD_DRV_LOG(INFO, "%s", "test"); //vhost_msg_strings[req]);
+	PMD_DRV_LOG(INFO, "%s", vhost_msg_strings[req]);
 
 	req_kernel = vhost_req_user_to_kernel[req];
 
