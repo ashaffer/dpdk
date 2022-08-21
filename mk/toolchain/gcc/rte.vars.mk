@@ -76,6 +76,7 @@ ifeq ($(shell test $(GCC_VERSION) -ge 100 && echo 1), 1)
 WERROR_FLAGS += -Wno-zero-length-bounds
 WERROR_FLAGS += -Wno-array-bounds
 WERROR_FLAGS += -Wno-stringop-overflow
+WERROR_FLAGS += -Wno-format-overflow
 endif
 
 HOST_WERROR_FLAGS := $(WERROR_FLAGS)

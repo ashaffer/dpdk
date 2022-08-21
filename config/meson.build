@@ -153,6 +153,7 @@ if cc.get_id() == 'gcc' and cc.version().version_compare('>=10.0')
 	warning_flags += '-Wno-zero-length-bounds'
 	warning_flags += '-Wno-array-bounds'
 	warning_flags += '-Wno-stringop-overflow'
+	warning_flags += '-Wno-format-overflow'
 endif
 
 if not dpdk_conf.get('RTE_ARCH_64')
