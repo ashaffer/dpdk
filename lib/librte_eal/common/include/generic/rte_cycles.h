@@ -26,6 +26,7 @@ enum timer_source {
 	EAL_TIMER_HPET
 };
 extern enum timer_source eal_timer_source;
+extern uint64_t eal_tsc_resolution_hz;
 
 /**
  * Get the measured frequency of the RDTSC counter

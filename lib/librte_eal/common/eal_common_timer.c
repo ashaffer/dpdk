@@ -19,7 +19,7 @@
 #include "eal_private.h"
 
 /* The frequency of the RDTSC timer resolution */
-static uint64_t eal_tsc_resolution_hz;
+uint64_t eal_tsc_resolution_hz;
 
 /* Pointer to user delay function */
 void (*rte_delay_us)(unsigned int) = NULL;
