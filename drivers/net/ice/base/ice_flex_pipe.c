@@ -2885,7 +2885,7 @@ static void ice_free_flow_profs(struct ice_hw *hw)
 	for (i = 0; i < ICE_BLK_COUNT; i++) {
 		struct ice_flow_prof *p, *tmp;
 
-		if (!&hw->fl_profs[i])
+		if (LIST_EMPTY(&hw->fl_profs[i]))
 			continue;
 
 		/* This call is being made as part of resource deallocation

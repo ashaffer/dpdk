@@ -23,8 +23,16 @@ EXECENV_CFLAGS += -I$(RTE_SDK)/lib/librte_eal/linux/eal/include
 EXECENV_LDLIBS  =
 EXECENV_ASFLAGS =
 
+ABI = 
+
+ifeq ($(RTE_TOOLCHAIN), gcc)
+	ABI = -lgcc_s
+else ifeq ($(RTE_TOOLCHAIN), clang)
+	ABI = -lc++abi
+endif
+
 ifeq ($(CONFIG_RTE_BUILD_SHARED_LIB),y)
-EXECENV_LDLIBS += -lgcc_s
+EXECENV_LDLIBS += $(ABI)
 endif
 
 EXECENV_LDLIBS-$(CONFIG_RTE_USE_LIBBSD) += -lbsd

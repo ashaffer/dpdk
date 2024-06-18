@@ -23,4 +23,6 @@ DEPDIRS-event := common bus mempool net
 DIRS-$(CONFIG_RTE_LIBRTE_RAWDEV) += raw
 DEPDIRS-raw := common bus mempool net event
 
+$(info [lib/Makefile] starting drivers rte.subdir.mk)
 include $(RTE_SDK)/mk/rte.subdir.mk
+$(info [lib/Makefile] finished drivers rte.subdir.mk)

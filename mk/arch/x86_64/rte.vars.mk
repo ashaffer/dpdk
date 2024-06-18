@@ -18,7 +18,6 @@
 #
 # examples for CONFIG_RTE_ARCH: i686, x86_64, x86_64_32
 #
-
 ARCH  ?= x86_64
 # common arch dir in eal headers
 ARCH_DIR := x86

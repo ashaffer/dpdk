@@ -48,6 +48,35 @@ extern "C" {
 		__GNUC_PATCHLEVEL__)
 #endif
 
+#define _PRAGMA(x) _Pragma(x)
+#define PRAGMA(x) _PRAGMA(#x)
+
+#define PRAGMA_PUSH(stack) PRAGMA(GCC stack push)
+#define PRAGMA_SET(stack, key, value) PRAGMA(GCC stack key value)
+#define PRAGMA_POP(stack) PRAGMA(GCC stack pop)
+
+#define PRAGMA_WITH(stack, key, value, code) { \
+PRAGMA_PUSH(stack) \
+PRAGMA_SET(stack, key, value) \
+code; \
+PRAGMA_POP(stack) \
+} 
+
+#ifdef RTE_TOOLCHAIN_GCC
+#define GCC_PRAGMA(x) x
+#define GCC_PRAGMA_PUSH(stack) PRAGMA_PUSH(stack)
+#define GCC_PRAGMA_POP(stack) PRAGMA_POP(stack)
+#define GCC_PRAGMA_SET(stack, key, value) PRAGMA_POP(stack, key, value)
+#define GCC_PRAGMA_WITH(stack, key, value, code) PRAGMA_WITH(stack, key, value, code)
+#else
+#define GCC_PRAGMA(x)
+#define GCC_PRAGMA_PUSH(stack)
+#define GCC_PRAGMA_POP(stack) 
+#define GCC_PRAGMA_SET(stack, key, value)
+#define GCC_PRAGMA_WITH(stack, key, value, code) { code; }
+#endif
+
+
 #ifdef RTE_ARCH_STRICT_ALIGN
 typedef uint64_t unaligned_uint64_t __attribute__ ((aligned(1)));
 typedef uint32_t unaligned_uint32_t __attribute__ ((aligned(1)));

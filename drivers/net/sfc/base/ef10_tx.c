@@ -307,6 +307,9 @@ ef10_tx_qpio_disable(
 	}
 }
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
+
 	__checkReturn	efx_rc_t
 ef10_tx_qpio_write(
 	__in			efx_txq_t *etp,
@@ -407,7 +410,7 @@ fail1:
 
 	return (rc);
 }
-
+PRAGMA_POP(diagnostic)
 	__checkReturn		efx_rc_t
 ef10_tx_qpost(
 	__in			efx_txq_t *etp,

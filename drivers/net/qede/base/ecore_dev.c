@@ -309,12 +309,14 @@ void ecore_db_recovery_ring(struct ecore_hwfn *p_hwfn,
 
 	/* Ring the doorbell */
 	if (db_exec == DB_REC_REAL_DEAL || db_exec == DB_REC_ONCE) {
-		if (db_entry->db_width == DB_REC_WIDTH_32B)
+		if (db_entry->db_width == DB_REC_WIDTH_32B) {
 			DIRECT_REG_WR(p_hwfn, db_entry->db_addr,
 				      *(u32 *)(db_entry->db_data));
-		else
+		}
+		else {
 			DIRECT_REG_WR64(p_hwfn, db_entry->db_addr,
 					*(u64 *)(db_entry->db_data));
+		}
 	}
 
 	/* Flush the write combined buffer. Next doorbell may come from a
@@ -5778,6 +5780,8 @@ static void ecore_chain_free_pbl(struct ecore_dev *p_dev,
 {
 	void **pp_virt_addr_tbl = p_chain->pbl.pp_virt_addr_tbl;
 	u8 *p_pbl_virt = (u8 *)p_chain->pbl_sp.p_virt_table;
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 	u32 page_cnt = p_chain->page_cnt, i, pbl_size;
 
 	if (!pp_virt_addr_tbl)
@@ -5804,6 +5808,7 @@ static void ecore_chain_free_pbl(struct ecore_dev *p_dev,
 				       p_chain->pbl_sp.p_phys_table, pbl_size);
 out:
 	OSAL_VFREE(p_dev, p_chain->pbl.pp_virt_addr_tbl);
+PRAGMA_POP(diagnostic)
 }
 
 void ecore_chain_free(struct ecore_dev *p_dev, struct ecore_chain *p_chain)
@@ -5822,9 +5827,7 @@ void ecore_chain_free(struct ecore_dev *p_dev, struct ecore_chain *p_chain)
 }
 
 static enum _ecore_status_t
-ecore_chain_alloc_sanity_check(struct ecore_dev *p_dev,
-			       enum ecore_chain_cnt_type cnt_type,
-			       osal_size_t elem_size, u32 page_cnt)
+ecore_chain_alloc_sanity_check(struct ecore_dev *p_dev, enum ecore_chain_cnt_type cnt_type, osal_size_t elem_size, u32 page_cnt)
 {
 	u64 chain_size = ELEMS_PER_PAGE(elem_size) * page_cnt;
 

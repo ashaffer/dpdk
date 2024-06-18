@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright(c) 2010-2014 Intel Corporation
 
-MAKEFLAGS += --no-print-directory
+# MAKEFLAGS += --no-print-directory
 
 # define Q to '@' or not. $(Q) is used to prefix all shell commands to
 # be executed silently.
@@ -49,12 +49,12 @@ endif
 endif
 RTE_OUTPUT ?= $(RTE_SRCDIR)/build
 export RTE_OUTPUT
+$(echo "SDKROOT Q: ${Q}");
 
 # the directory where intermediate build files are stored, like *.o,
 # *.d, *.cmd, ...
 BUILDDIR = $(RTE_OUTPUT)/build
 export BUILDDIR
-
 export ROOTDIRS-y ROOTDIRS- ROOTDIRS-n
 
 .PHONY: default test-build
@@ -69,21 +69,21 @@ cscope gtags tags etags:
 	$(Q)$(RTE_SDK)/devtools/build-tags.sh $@ $T
 
 .PHONY: test test-fast test-perf coverage test-drivers test-dump
-test test-fast test-perf coverage test-drivers test-dump:
+test test-fast test-perf coverage test-drivers test-dump:io
 	$(Q)$(MAKE) -f $(RTE_SDK)/mk/rte.sdktest.mk $@
 
 .PHONY: install
 install:
-	$(Q)$(MAKE) -f $(RTE_SDK)/mk/rte.sdkinstall.mk pre_install
-	$(Q)$(MAKE) -f $(RTE_SDK)/mk/rte.sdkinstall.mk $@
+	$(Q)$(MAKE) -w -f $(RTE_SDK)/mk/rte.sdkinstall.mk pre_install
+	$(Q)$(MAKE) -w -f $(RTE_SDK)/mk/rte.sdkinstall.mk $@
 install-%:
-	$(Q)$(MAKE) -f $(RTE_SDK)/mk/rte.sdkinstall.mk $@
+	$(Q)$(MAKE) -w -f $(RTE_SDK)/mk/rte.sdkinstall.mk $@
 
 .PHONY: doc help
 doc: doc-all
 help: doc-help
 doc-%:
-	$(Q)$(MAKE) -f $(RTE_SDK)/mk/rte.sdkdoc.mk $*
+	$(Q)$(MAKE) -w -f $(RTE_SDK)/mk/rte.sdkdoc.mk $*
 
 .PHONY: gcov gcovclean
 gcov gcovclean:

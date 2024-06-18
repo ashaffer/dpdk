@@ -2198,6 +2198,8 @@ enum _ecore_status_t ecore_mcp_get_mfw_ver(struct ecore_hwfn *p_hwfn,
 	return ECORE_SUCCESS;
 }
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 enum _ecore_status_t ecore_mcp_get_media_type(struct ecore_hwfn *p_hwfn,
 					      struct ecore_ptt *p_ptt,
 					      u32 *p_media_type)
@@ -2225,6 +2227,7 @@ enum _ecore_status_t ecore_mcp_get_media_type(struct ecore_hwfn *p_hwfn,
 
 	return ECORE_SUCCESS;
 }
+PRAGMA_POP(diagnostic)
 
 enum _ecore_status_t ecore_mcp_get_transceiver_data(struct ecore_hwfn *p_hwfn,
 						    struct ecore_ptt *p_ptt,

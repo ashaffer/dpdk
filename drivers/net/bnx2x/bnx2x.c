@@ -10519,8 +10519,9 @@ static int bnx2x_init_hw_common(struct bnx2x_softc *sc)
 	ecore_init_block(sc, BLOCK_NIG, PHASE_COMMON);
 
 	/* in E3 this done in per-port section */
-	if (!CHIP_IS_E3(sc))
+	if (!CHIP_IS_E3(sc)) {
 		REG_WR(sc, NIG_REG_LLH_MF_MODE, IS_MF(sc));
+	}
 
 	if (CHIP_IS_E1H(sc)) {
 /* not applicable for E2 (and above ...) */
@@ -11208,8 +11209,9 @@ static int bnx2x_init_hw_func(struct bnx2x_softc *sc)
 
 	ecore_init_block(sc, BLOCK_PGLUE_B, init_phase);
 
-	if (!CHIP_IS_E1x(sc))
+	if (!CHIP_IS_E1x(sc)) {
 		REG_WR(sc, PGLUE_B_REG_WAS_ERROR_PF_7_0_CLR, func);
+	}
 
 	ecore_init_block(sc, BLOCK_ATC, init_phase);
 	ecore_init_block(sc, BLOCK_DMAE, init_phase);
@@ -11225,8 +11227,9 @@ static int bnx2x_init_hw_func(struct bnx2x_softc *sc)
 	ecore_init_block(sc, BLOCK_CSEM, init_phase);
 	ecore_init_block(sc, BLOCK_XSEM, init_phase);
 
-	if (!CHIP_IS_E1x(sc))
+	if (!CHIP_IS_E1x(sc)) {
 		REG_WR(sc, QM_REG_PF_EN, 1);
+	}
 
 	if (!CHIP_IS_E1x(sc)) {
 		REG_WR(sc, TSEM_REG_VFPF_ERR_NUM, BNX2X_MAX_NUM_OF_VFS + func);
@@ -11248,15 +11251,17 @@ static int bnx2x_init_hw_func(struct bnx2x_softc *sc)
 	ecore_init_block(sc, BLOCK_UPB, init_phase);
 	ecore_init_block(sc, BLOCK_XPB, init_phase);
 	ecore_init_block(sc, BLOCK_PBF, init_phase);
-	if (!CHIP_IS_E1x(sc))
+	if (!CHIP_IS_E1x(sc)) {
 		REG_WR(sc, PBF_REG_DISABLE_PF, 0);
+	}
 
 	ecore_init_block(sc, BLOCK_CDU, init_phase);
 
 	ecore_init_block(sc, BLOCK_CFC, init_phase);
 
-	if (!CHIP_IS_E1x(sc))
+	if (!CHIP_IS_E1x(sc)) {
 		REG_WR(sc, CFC_REG_WEAK_ENABLE_PF, 1);
+	}
 
 	if (IS_MF(sc)) {
 		REG_WR(sc, NIG_REG_LLH0_FUNC_EN + port * 8, 1);

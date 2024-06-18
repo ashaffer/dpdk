@@ -25,10 +25,8 @@ enum i40e_status_code i40e_add_sd_table_entry(struct i40e_hw *hw,
 {
 	enum i40e_status_code ret_code = I40E_SUCCESS;
 	struct i40e_hmc_sd_entry *sd_entry;
-	enum   i40e_memory_type mem_type;
 	bool dma_mem_alloc_done = false;
 	struct i40e_dma_mem mem;
-	u64 alloc_len;
 
 	if (NULL == hmc_info->sd_table.sd_entry) {
 		ret_code = I40E_ERR_BAD_PTR;
@@ -44,36 +42,36 @@ enum i40e_status_code i40e_add_sd_table_entry(struct i40e_hw *hw,
 
 	sd_entry = &hmc_info->sd_table.sd_entry[sd_index];
 	if (!sd_entry->valid) {
+		// u64 alloc_len;
+		// enum i40e_memory_type mem_type;
+
 		if (I40E_SD_TYPE_PAGED == type) {
-			mem_type = i40e_mem_pd;
-			alloc_len = I40E_HMC_PAGED_BP_SIZE;
+			/* allocate a 4K pd page or 2M backing page */
+			ret_code = i40e_allocate_dma_mem(hw, &mem, i40e_mme_pd, I40E_HMC_PAGED_BP_SIZE, I40E_HMC_PD_BP_BUF_ALIGNMENT);
+			// mem_type = i40e_mem_pd;
+			// alloc_len = I40E_HMC_PAGED_BP_SIZE;
 		} else {
-			mem_type = i40e_mem_bp_jumbo;
-			alloc_len = direct_mode_sz;
+			/* allocate a 4K pd page or 2M backing page */
+			ret_code = i40e_allocate_dma_mem(hw, &mem, i40e_mem_bp_jumbo, direct_mode_sz, I40E_HMC_PD_BP_BUF_ALIGNMENT);
+			// mem_type = i40e_mem_bp_jumbo;
+			// alloc_len = direct_mode_sz;
 		}
 
-		/* allocate a 4K pd page or 2M backing page */
-		ret_code = i40e_allocate_dma_mem(hw, &mem, mem_type, alloc_len,
-						 I40E_HMC_PD_BP_BUF_ALIGNMENT);
-		if (ret_code)
+
+		if (ret_code) {
 			goto exit;
+		}
+
 		dma_mem_alloc_done = true;
 		if (I40E_SD_TYPE_PAGED == type) {
-			ret_code = i40e_allocate_virt_mem(hw,
-					&sd_entry->u.pd_table.pd_entry_virt_mem,
-					sizeof(struct i40e_hmc_pd_entry) * 512);
-			if (ret_code)
+			ret_code = i40e_allocate_virt_mem(hw, &sd_entry->u.pd_table.pd_entry_virt_mem, sizeof(struct i40e_hmc_pd_entry) * 512);
+			if (ret_code) {
 				goto exit;
-			sd_entry->u.pd_table.pd_entry =
-				(struct i40e_hmc_pd_entry *)
-				sd_entry->u.pd_table.pd_entry_virt_mem.va;
-			i40e_memcpy(&sd_entry->u.pd_table.pd_page_addr,
-				    &mem, sizeof(struct i40e_dma_mem),
-				    I40E_NONDMA_TO_NONDMA);
+			}
+			sd_entry->u.pd_table.pd_entry = (struct i40e_hmc_pd_entry *)sd_entry->u.pd_table.pd_entry_virt_mem.va;
+			i40e_memcpy(&sd_entry->u.pd_table.pd_page_addr, &mem, sizeof(struct i40e_dma_mem), I40E_NONDMA_TO_NONDMA);
 		} else {
-			i40e_memcpy(&sd_entry->u.bp.addr,
-				    &mem, sizeof(struct i40e_dma_mem),
-				    I40E_NONDMA_TO_NONDMA);
+			i40e_memcpy(&sd_entry->u.bp.addr, &mem, sizeof(struct i40e_dma_mem), I40E_NONDMA_TO_NONDMA);
 			sd_entry->u.bp.sd_pd_index = sd_index;
 		}
 		/* initialize the sd entry */
@@ -82,13 +80,18 @@ enum i40e_status_code i40e_add_sd_table_entry(struct i40e_hw *hw,
 		/* increment the ref count */
 		I40E_INC_SD_REFCNT(&hmc_info->sd_table);
 	}
+	
 	/* Increment backing page reference count */
-	if (I40E_SD_TYPE_DIRECT == sd_entry->entry_type)
+	if (I40E_SD_TYPE_DIRECT == sd_entry->entry_type) {
 		I40E_INC_BP_REFCNT(&sd_entry->u.bp);
+	}
+
 exit:
-	if (I40E_SUCCESS != ret_code)
-		if (dma_mem_alloc_done)
+	if (I40E_SUCCESS != ret_code) {
+		if (dma_mem_alloc_done) {
 			i40e_free_dma_mem(hw, &mem);
+		}
+	}
 
 	return ret_code;
 }

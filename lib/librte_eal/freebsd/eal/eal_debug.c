@@ -26,7 +26,7 @@ void rte_dump_stack(void)
 	char **symb = NULL;
 	int size;
 
-	size = backtrace(func, BACKTRACE_SIZE);
+	size = back_trace(func, BACKTRACE_SIZE);
 	symb = backtrace_symbols(func, size);
 
 	if (symb == NULL)

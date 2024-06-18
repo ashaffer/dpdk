@@ -804,9 +804,10 @@ static inline void ecore_enable_blocks_parity(struct bnx2x_softc *sc)
 	for (i = 0; i < ARRSIZE(ecore_blocks_parity_data); i++) {
 		uint32_t reg_mask = ecore_parity_reg_mask(sc, i);
 
-		if (reg_mask)
+		if (reg_mask) {
 			REG_WR(sc, ecore_blocks_parity_data[i].mask_addr,
 				ecore_blocks_parity_data[i].en_mask & reg_mask);
+		}
 	}
 
 	/* Enable MCP parity attentions */

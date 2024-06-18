@@ -1854,6 +1854,9 @@ u32 ecore_get_mstorm_eth_vf_prods_offset(struct ecore_hwfn *p_hwfn,
 #endif
 static u8 cdu_crc8_table[CRC8_TABLE_SIZE];
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
+
 /* Calculate and return CDU validation byte per connection type / region /
  * cid
  */
@@ -1914,6 +1917,8 @@ static u8 ecore_calc_cdu_validation_byte(u8 conn_type, u8 region, u32 cid)
 
 	return validation_byte;
 }
+
+PRAGMA_POP(diagnostic)
 
 /* Calcualte and set validation bytes for session context */
 void ecore_calc_session_ctx_validation(void *p_ctx_mem, u16 ctx_size,

@@ -575,10 +575,12 @@ void ecore_gtt_init(struct ecore_hwfn *p_hwfn,
 	/* Set the global windows */
 	gtt_base = PXP_PF_WINDOW_ADMIN_START + PXP_PF_WINDOW_ADMIN_GLOBAL_START;
 
-	for (i = 0; i < OSAL_ARRAY_SIZE(pxp_global_win); i++)
-		if (pxp_global_win[i])
+	for (i = 0; i < OSAL_ARRAY_SIZE(pxp_global_win); i++) {
+		if (pxp_global_win[i]) {
 			REG_WR(p_hwfn, gtt_base + i * PXP_GLOBAL_ENTRY_SIZE,
 			       pxp_global_win[i]);
+		}
+	}
 }
 
 enum _ecore_status_t ecore_init_fw_data(struct ecore_dev *p_dev,

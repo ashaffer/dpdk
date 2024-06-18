@@ -490,15 +490,19 @@ static void ecore_init_pxp_arb(struct bnx2x_softc *sc, int r_order,
 	REG_WR(sc, PXP2_REG_RQ_RD_MBS0, r_order);
 	REG_WR(sc, PXP2_REG_RQ_RD_MBS1, r_order);
 
-	if (CHIP_IS_E1H(sc) && (r_order == MAX_RD_ORD))
+	if (CHIP_IS_E1H(sc) && (r_order == MAX_RD_ORD)) {
 		REG_WR(sc, PXP2_REG_RQ_PDR_LIMIT, 0xe00);
+	}
 
-	if (CHIP_IS_E3(sc))
+	if (CHIP_IS_E3(sc)) {
 		REG_WR(sc, PXP2_REG_WR_USDMDP_TH, (0x4 << w_order));
-	else if (CHIP_IS_E2(sc))
+	}
+	else if (CHIP_IS_E2(sc)) {
 		REG_WR(sc, PXP2_REG_WR_USDMDP_TH, (0x8 << w_order));
-	else
+	}
+	else {
 		REG_WR(sc, PXP2_REG_WR_USDMDP_TH, (0x18 << w_order));
+	}
 
 	/*    MPS      w_order     optimal TH      presently TH
 	 *    128         0             0               2
@@ -530,8 +534,9 @@ static void ecore_init_pxp_arb(struct bnx2x_softc *sc, int r_order,
 #define PCIE_REG_PCIER_TL_HDR_FC_ST		0x2980
 	val = REG_RD(sc, PCIE_REG_PCIER_TL_HDR_FC_ST);
 	val &= 0xFF;
-	if (val <= 0x20)
+	if (val <= 0x20) {
 		REG_WR(sc, PXP2_REG_PGL_TAGS_LIMIT, 0x20);
+	}
 }
 
 /****************************************************************************

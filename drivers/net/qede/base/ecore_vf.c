@@ -71,6 +71,9 @@ static void ecore_vf_pf_req_end(struct ecore_hwfn *p_hwfn,
  * We'd need to handshake in acquire capabilities for any such.
  */
 #endif
+
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-parameter")
 static enum _ecore_status_t
 ecore_send_msg2pf(struct ecore_hwfn *p_hwfn,
 		  u8 *done, u32 resp_size)
@@ -88,7 +91,6 @@ ecore_send_msg2pf(struct ecore_hwfn *p_hwfn,
 
 	/* need to add the END TLV to the message size */
 	resp_size += sizeof(struct channel_list_end_tlv);
-
 	/* Send TLVs over HW channel */
 	OSAL_MEMSET(&trigger, 0, sizeof(struct ustorm_trigger_vf_zone));
 	trigger.vf_pf_msg_valid = 1;
@@ -146,6 +148,7 @@ ecore_send_msg2pf(struct ecore_hwfn *p_hwfn,
 
 	return rc;
 }
+PRAGMA_POP(diagnostic)
 
 static void ecore_vf_pf_add_qid(struct ecore_hwfn *p_hwfn,
 				struct ecore_queue_cid *p_cid)
@@ -169,7 +172,6 @@ enum _ecore_status_t _ecore_vf_pf_release(struct ecore_hwfn *p_hwfn,
 	struct ecore_vf_iov *p_iov = p_hwfn->vf_iov_info;
 	struct pfvf_def_resp_tlv *resp;
 	struct vfpf_first_tlv *req;
-	u32 size;
 	enum _ecore_status_t rc;
 
 	/* clear mailbox and prep first tlv */
@@ -204,11 +206,10 @@ enum _ecore_status_t _ecore_vf_pf_release(struct ecore_hwfn *p_hwfn,
 				       sizeof(union pfvf_tlvs));
 
 	if (p_iov->bulletin.p_virt) {
-		size = sizeof(struct ecore_bulletin_content);
 		OSAL_DMA_FREE_COHERENT(p_hwfn->p_dev,
 				       p_iov->bulletin.p_virt,
 				       p_iov->bulletin.phys,
-				       size);
+				       sizeof(struct ecore_bulletin_content));
 	}
 
 #ifdef CONFIG_ECORE_LOCK_ALLOC

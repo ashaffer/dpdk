@@ -3640,6 +3640,9 @@ s32 ixgbe_set_san_mac_addr_generic(struct ixgbe_hw *hw, u8 *san_mac_addr)
  **/
 u16 ixgbe_get_pcie_msix_count_generic(struct ixgbe_hw *hw)
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
 	u16 msix_count = 1;
 	u16 max_msix_count;
 	u16 pcie_offset;
@@ -3672,6 +3675,8 @@ u16 ixgbe_get_pcie_msix_count_generic(struct ixgbe_hw *hw)
 
 	if (msix_count > max_msix_count)
 		msix_count = max_msix_count;
+	
+#pragma GCC diagnostic pop
 
 	return msix_count;
 }

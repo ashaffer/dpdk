@@ -62,7 +62,7 @@ handle_work(void *arg)
 	struct rte_mbuf *buf[8] __rte_cache_aligned;
 	struct worker_params *wp = arg;
 	struct rte_distributor *db = wp->dist;
-	unsigned int count = 0, num = 0;
+	unsigned int num = 0;
 	unsigned int id = __sync_fetch_and_add(&worker_idx, 1);
 	int i;
 
@@ -71,12 +71,10 @@ handle_work(void *arg)
 	num = rte_distributor_get_pkt(db, id, buf, buf, num);
 	while (!quit) {
 		worker_stats[id].handled_packets += num;
-		count += num;
 		num = rte_distributor_get_pkt(db, id,
 				buf, buf, num);
 	}
 	worker_stats[id].handled_packets += num;
-	count += num;
 	rte_distributor_return_pkt(db, id, buf, num);
 	return 0;
 }
@@ -268,7 +266,6 @@ handle_work_with_free_mbufs(void *arg)
 	struct rte_mbuf *buf[8] __rte_cache_aligned;
 	struct worker_params *wp = arg;
 	struct rte_distributor *d = wp->dist;
-	unsigned int count = 0;
 	unsigned int i;
 	unsigned int num = 0;
 	unsigned int id = __sync_fetch_and_add(&worker_idx, 1);
@@ -278,14 +275,12 @@ handle_work_with_free_mbufs(void *arg)
 	num = rte_distributor_get_pkt(d, id, buf, buf, num);
 	while (!quit) {
 		worker_stats[id].handled_packets += num;
-		count += num;
 		for (i = 0; i < num; i++)
 			rte_pktmbuf_free(buf[i]);
 		num = rte_distributor_get_pkt(d,
 				id, buf, buf, num);
 	}
 	worker_stats[id].handled_packets += num;
-	count += num;
 	rte_distributor_return_pkt(d, id, buf, num);
 	return 0;
 }
@@ -341,7 +336,6 @@ handle_work_for_shutdown_test(void *arg)
 	struct rte_distributor *d = wp->dist;
 	unsigned int count = 0;
 	unsigned int num = 0;
-	unsigned int total = 0;
 	unsigned int i;
 	unsigned int returned = 0;
 	const unsigned int id = __sync_fetch_and_add(&worker_idx, 1);
@@ -357,7 +351,6 @@ handle_work_for_shutdown_test(void *arg)
 			rte_pktmbuf_free(buf[i]);
 		num = rte_distributor_get_pkt(d,
 				id, buf, buf, num);
-		total += num;
 	}
 	worker_stats[id].handled_packets += num;
 	count += num;

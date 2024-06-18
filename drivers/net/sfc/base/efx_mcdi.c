@@ -6,6 +6,8 @@
 
 #include "efx.h"
 #include "efx_impl.h"
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wshift-count-overflow")
 
 #if EFSYS_OPT_MCDI
 
@@ -1149,6 +1151,8 @@ efx_mcdi_exit_assertion_handler(
 	return (efx_mcdi_do_reboot(enp, B_TRUE));
 }
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 	__checkReturn	efx_rc_t
 efx_mcdi_read_assertion(
 	__in		efx_nic_t *enp)
@@ -1244,7 +1248,7 @@ fail1:
 
 	return (rc);
 }
-
+PRAGMA_POP(diagnostic)
 
 /*
  * Internal routines for for specific MCDI requests.
@@ -2373,3 +2377,4 @@ fail1:
 }
 
 #endif	/* EFSYS_OPT_MCDI */
+PRAGMA_POP(diagnostic)

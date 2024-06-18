@@ -126,8 +126,9 @@ static OSAL_INLINE void __internal_ram_wr(__rte_unused void *p_hwfn,
 {
 	unsigned int i;
 
-	for (i = 0; i < size / sizeof(*data); i++)
+	for (i = 0; i < size / sizeof(*data); i++) {
 		DIRECT_REG_WR(p_hwfn, &((u32 OSAL_IOMEM *)addr)[i], data[i]);
+	}
 }
 
 #ifdef ECORE_CONFIG_DIRECT_HWFN
@@ -142,9 +143,10 @@ static OSAL_INLINE void __internal_ram_wr_relaxed(__rte_unused void *p_hwfn,
 {
 	unsigned int i;
 
-	for (i = 0; i < size / sizeof(*data); i++)
+	for (i = 0; i < size / sizeof(*data); i++) {
 		DIRECT_REG_WR_RELAXED(p_hwfn, &((u32 OSAL_IOMEM *)addr)[i],
 				      data[i]);
+	}
 }
 
 #ifdef ECORE_CONFIG_DIRECT_HWFN

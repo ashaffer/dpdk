@@ -566,7 +566,15 @@ int bnxt_dev_xstats_get_by_id_op(struct rte_eth_dev *dev, const uint64_t *ids,
 			PMD_DRV_LOG(ERR, "id value isn't valid");
 			return -1;
 		}
-		values[i] = values_copy[ids[i]];
+		const uint64_t id = ids[i];
+#ifdef GCC_VERSION 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
+		values[i] = values_copy[id];
+#ifdef GCC_VERSION
+#pragma GCC diagnostic pop
+#endif
 	}
 	return stat_cnt;
 }

@@ -5,9 +5,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-
 #include <rte_string_fns.h>
-
 #include "rte_kvargs.h"
 
 /*

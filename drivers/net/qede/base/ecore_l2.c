@@ -2334,6 +2334,8 @@ ecore_eth_tx_queue_maxrate(struct ecore_hwfn *p_hwfn,
 #define RSS_TSTORM_UPDATE_STATUS_MAX_POLL_COUNT    100
 #define RSS_TSTORM_UPDATE_STATUS_POLL_PERIOD_US    1
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 enum _ecore_status_t
 ecore_update_eth_rss_ind_table_entry(struct ecore_hwfn *p_hwfn,
 				     u8 vport_id,
@@ -2382,3 +2384,4 @@ ecore_update_eth_rss_ind_table_entry(struct ecore_hwfn *p_hwfn,
 
 	return ECORE_SUCCESS;
 }
+PRAGMA_POP(diagnostic)

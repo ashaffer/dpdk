@@ -49,6 +49,8 @@ STATIC s32 ixgbe_read_i2c_sff8472_82598(struct ixgbe_hw *hw, u8 byte_offset,
  **/
 void ixgbe_set_pcie_completion_timeout(struct ixgbe_hw *hw)
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 	u32 gcr = IXGBE_READ_REG(hw, IXGBE_GCR);
 	u16 pcie_devctl2;
 
@@ -77,6 +79,7 @@ out:
 	/* disable completion timeout resend */
 	gcr &= ~IXGBE_GCR_CMPL_TMOUT_RESEND;
 	IXGBE_WRITE_REG(hw, IXGBE_GCR, gcr);
+#pragma GCC diagnostic pop
 }
 
 /**

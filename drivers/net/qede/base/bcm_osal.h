@@ -128,12 +128,18 @@ void osal_dma_free_mem(struct ecore_dev *edev, dma_addr_t phys);
 	DIRECT_REG_RD(_p_hwfn,		\
 			((u8 *)(uintptr_t)(_p_hwfn->regview) + (_reg_offset)))
 
-#define DIRECT_REG_WR16(_reg_addr, _val) rte_write16((_val), (_reg_addr))
+#define DIRECT_REG_WR(dev, _reg_addr, _val) GCC_PRAGMA_WITH(diagnostic, ignored, "-Wmaybe-uninitialized", rte_write32((_val), (_reg_addr)))
+#define DIRECT_REG_WR_RELAXED(dev, _reg_addr, _val) GCC_PRAGMA_WITH(diagnostic, ignored, "-Wmaybe-uninitialized", rte_write32_relaxed((_val), (_reg_addr)))
+#define DIRECT_REG_WR16(_reg_addr, _val) GCC_PRAGMA_WITH(diagnostic, ignored, "-Wmaybe-uninitialized", rte_write16((_val), (_reg_addr)))
 
-#define DIRECT_REG_WR(_dev, _reg_addr, _val) rte_write32((_val), (_reg_addr))
 
-#define DIRECT_REG_WR_RELAXED(_dev, _reg_addr, _val) \
-	rte_write32_relaxed((_val), (_reg_addr))
+// #define DIRECT_REG_WR(_dev, _reg_addr, _val) GCC_Pragma("GCC diagnostic ignored \"-Wmaybe-uninitialized\"") \
+// 	rte_write32((_val), (_reg_addr)); \
+// 	_Pragma("GCC diagnostic pop")
+
+// #define DIRECT_REG_WR_RELAXED(_dev, _reg_addr, _val) GCC_Pragma("GCC diagnostic ignored \"-Wmaybe-uninitialized\"") \
+// 	rte_write32_relaxed((_val), (_reg_addr)); \
+// 	GCC_Pragma("GCC diagnostic pop")
 
 #define REG_WR(_p_hwfn, _reg_offset, _val) \
 	DIRECT_REG_WR(NULL,  \

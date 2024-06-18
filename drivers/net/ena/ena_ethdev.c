@@ -600,8 +600,10 @@ static int ena_rss_reta_query(struct rte_eth_dev *dev,
 	int reta_conf_idx;
 	int reta_idx;
 
-	if (reta_size == 0 || reta_conf == NULL ||
-	    (reta_size > RTE_RETA_GROUP_SIZE && ((reta_conf + 1) == NULL)))
+	if (unlikely(reta_size == 0 || reta_conf == NULL))
+		return -EINVAL;
+
+	if (unlikely(reta_size > RTE_RETA_GROUP_SIZE && !((reta_conf + 1))))
 		return -EINVAL;
 
 	rc = ena_com_indirect_table_get(ena_dev, indirect_table);

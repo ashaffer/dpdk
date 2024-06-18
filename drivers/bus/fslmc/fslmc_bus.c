@@ -265,7 +265,7 @@ static int
 rte_fslmc_scan(void)
 {
 	int ret;
-	int device_count = 0;
+	// int device_count = 0;
 	char fslmc_dirpath[PATH_MAX];
 	DIR *dir;
 	struct dirent *entry;
@@ -300,7 +300,7 @@ rte_fslmc_scan(void)
 			/* Error in parsing directory - exit gracefully */
 			goto scan_fail_cleanup;
 		}
-		device_count += 1;
+		// device_count += 1;
 	}
 
 	closedir(dir);

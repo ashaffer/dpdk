@@ -1132,10 +1132,8 @@ atl_xmit_cleanup(struct atl_tx_queue *txq)
 	if (txq != NULL) {
 		sw_ring = txq->sw_ring;
 		int head = txq->tx_head;
-		int cnt;
-		int i;
 
-		for (i = 0, cnt = head; ; i++) {
+		for (int cnt = head; ; cnt++) {
 			txd = &txq->hw_ring[cnt];
 
 			if (txd->dd)

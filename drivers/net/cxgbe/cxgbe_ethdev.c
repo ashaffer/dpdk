@@ -622,16 +622,7 @@ int cxgbe_dev_rx_queue_setup(struct rte_eth_dev *eth_dev,
 	}
 
 	rxq->rspq.size = temp_nb_desc;
-	if ((&rxq->fl) != NULL)
-		rxq->fl.size = temp_nb_desc;
-
-	/* Set to jumbo mode if necessary */
-	if (pkt_len > ETHER_MAX_LEN)
-		eth_dev->data->dev_conf.rxmode.offloads |=
-			DEV_RX_OFFLOAD_JUMBO_FRAME;
-	else
-		eth_dev->data->dev_conf.rxmode.offloads &=
-			~DEV_RX_OFFLOAD_JUMBO_FRAME;
+	rxq->fl.size = temp_nb_desc;
 
 	err = t4_sge_alloc_rxq(adapter, &rxq->rspq, false, eth_dev, msi_idx,
 			       &rxq->fl, NULL,
@@ -642,6 +633,7 @@ int cxgbe_dev_rx_queue_setup(struct rte_eth_dev *eth_dev,
 	dev_debug(adapter, "%s: err = %d; port_id = %d; cntxt_id = %u; abs_id = %u\n",
 		  __func__, err, pi->port_id, rxq->rspq.cntxt_id,
 		  rxq->rspq.abs_id);
+
 	return err;
 }
 

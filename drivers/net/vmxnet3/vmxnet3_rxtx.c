@@ -324,6 +324,8 @@ vmxnet3_unmap_pkt(uint16_t eop_idx, vmxnet3_tx_queue_t *txq)
 	return completed + 1;
 }
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 static void
 vmxnet3_tq_tx_complete(vmxnet3_tx_queue_t *txq)
 {
@@ -342,6 +344,7 @@ vmxnet3_tq_tx_complete(vmxnet3_tx_queue_t *txq)
 
 	PMD_TX_LOG(DEBUG, "Processed %d tx comps & command descs.", completed);
 }
+PRAGMA_POP(diagnostic)
 
 uint16_t
 vmxnet3_prep_pkts(__rte_unused void *tx_queue, struct rte_mbuf **tx_pkts,

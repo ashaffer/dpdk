@@ -22,6 +22,10 @@
 
 #include "test_cmdline.h"
 
+
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wstring-concatenation")
+
 #define IP4(a,b,c,d) {((uint32_t)(((a) & 0xff)) | \
 					   (((b) & 0xff) << 8) | \
 					   (((c) & 0xff) << 16)  | \
@@ -689,3 +693,6 @@ test_parse_ipaddr_invalid_param(void)
 	}
 	return 0;
 }
+
+
+PRAGMA_POP(diagnostic)

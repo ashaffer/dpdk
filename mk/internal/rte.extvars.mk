@@ -6,10 +6,10 @@
 #
 ifdef S
 ifeq ("$(origin S)", "command line")
-RTE_SRCDIR := $(abspath $(S))
+RTE_SRCDIR := $(abspath $S)
 endif
 endif
-RTE_SRCDIR  ?= $(CURDIR)
+RTE_SRCDIR ?= $(CURDIR)
 export RTE_SRCDIR
 
 #

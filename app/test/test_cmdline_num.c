@@ -13,6 +13,9 @@
 
 #include "test_cmdline.h"
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wstring-concatenation")
+
 struct num_unsigned_str {
 	const char * str;
 	uint64_t result;
@@ -591,3 +594,5 @@ test_parse_num_valid(void)
 
 	return 0;
 }
+
+PRAGMA_POP(diagnostic)

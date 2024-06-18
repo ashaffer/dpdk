@@ -241,6 +241,8 @@ out:
 	return is_empty;
 }
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 void ecore_wr(struct ecore_hwfn *p_hwfn,
 	      struct ecore_ptt *p_ptt, u32 hw_addr, u32 val)
 {
@@ -290,6 +292,7 @@ u32 ecore_rd(struct ecore_hwfn *p_hwfn, struct ecore_ptt *p_ptt, u32 hw_addr)
 
 	return val;
 }
+PRAGMA_POP(diagnostic)
 
 static void ecore_memcpy_hw(struct ecore_hwfn *p_hwfn,
 			    struct ecore_ptt *p_ptt,
@@ -315,13 +318,17 @@ static void ecore_memcpy_hw(struct ecore_hwfn *p_hwfn,
 		host_addr = (u32 *)((u8 *)addr + done);
 		reg_addr = (u32 OSAL_IOMEM *)OSAL_REG_ADDR(p_hwfn, hw_offset);
 
-		if (to_device)
-			while (dw_count--)
+		if (to_device) {
+			while (dw_count--) {
 				DIRECT_REG_WR(p_hwfn, reg_addr++, *host_addr++);
-		else
-			while (dw_count--)
+			}
+		}
+		else {
+			while (dw_count--) {
 				*host_addr++ = DIRECT_REG_RD(p_hwfn,
 							     reg_addr++);
+			}
+		}
 
 		done += quota;
 	}

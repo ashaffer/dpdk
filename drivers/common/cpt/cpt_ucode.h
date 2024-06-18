@@ -458,6 +458,9 @@ fill_sg_comp_from_iov(sg_comp_t *list,
 	return (uint32_t)i;
 }
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
+
 static __rte_always_inline void
 cpt_digest_gen_prep(uint32_t flags,
 		    uint64_t d_lens,
@@ -1444,6 +1447,8 @@ cpt_dec_hmac_prep(uint32_t flags,
 	*prep_req = req;
 	return;
 }
+
+
 
 static __rte_always_inline void
 cpt_zuc_snow3g_enc_prep(uint32_t req_flags,
@@ -2508,6 +2513,8 @@ cpt_kasumi_dec_prep(uint64_t d_offs,
 	*prep_req = req;
 	return;
 }
+
+PRAGMA_POP(diagnostic)
 
 static __rte_always_inline void *
 cpt_fc_dec_hmac_prep(uint32_t flags,

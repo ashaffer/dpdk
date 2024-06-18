@@ -7,7 +7,6 @@
 # config file of SDK. It also includes the config file from external
 # application if any.
 #
-
 ifeq ($(RTE_SDK),)
 $(error RTE_SDK is not defined)
 endif
@@ -40,7 +39,8 @@ ifneq ($(BUILDING_RTE_SDK),)
 endif
 
 RTE_TARGET ?= $(RTE_ARCH)-$(RTE_MACHINE)-$(RTE_EXEC_ENV)-$(RTE_TOOLCHAIN)
-
+echo "Setting RTE_TARGET: ${RTE_TARGET}";
+  
 ifeq ($(BUILDING_RTE_SDK),)
 # if we are building an external app/lib, include internal/rte.extvars.mk that will
 # define RTE_OUTPUT, RTE_SRCDIR, RTE_EXTMK, RTE_SDK_BIN, (etc ...)

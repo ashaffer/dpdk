@@ -96,6 +96,7 @@ endif
 INC := rte_kni_common.h
 INC += rte_os.h
 
+$(info "LINUX librte_eal Makefile CFLAGS: $(CFLAGS)")
 SYMLINK-$(CONFIG_RTE_EXEC_ENV_LINUX)-include := $(addprefix include/,$(INC))
 
 include $(RTE_SDK)/mk/rte.lib.mk

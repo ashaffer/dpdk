@@ -3011,8 +3011,9 @@ static int ecore_mcast_setup_e1h(struct bnx2x_softc *sc,
 		}
 
 		/* Set the mcast filter in the internal memory */
-		for (i = 0; i < ECORE_MC_HASH_SIZE; i++)
+		for (i = 0; i < ECORE_MC_HASH_SIZE; i++) {
 			REG_WR(sc, ECORE_MC_HASH_OFFSET(sc, i), mc_filter[i]);
+		}
 	} else
 		/* clear the registry */
 		ECORE_MEMSET(o->registry.aprox_match.vec, 0,

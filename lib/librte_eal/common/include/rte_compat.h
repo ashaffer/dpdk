@@ -89,4 +89,5 @@ __attribute__((section(".text.experimental")))
 
 #endif
 
-#endif /* _RTE_COMPAT_H_ */
+#endif
+/* _RTE_COMPAT_H_ */

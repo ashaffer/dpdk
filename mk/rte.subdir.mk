@@ -29,12 +29,16 @@ _postinstall: build
 .PHONY: build
 build: _postbuild
 
+$(info [rte.subdir.mk] initial pass $S)
+
 .SECONDEXPANSION:
 .PHONY: $(DIRS-y)
 $(DIRS-y):
 	@[ -d $(CURDIR)/$@ ] || mkdir -p $(CURDIR)/$@
+	$(info [rte.subdir.mk] building)
+	$(info [rte.subdir.mk] $(CURDIR), $S, $@)
 	@echo "== Build $S/$@"
-	@$(MAKE) S=$S/$@ -f $(SRCDIR)/$@/Makefile -C $(CURDIR)/$@ all
+	$(MAKE) S=$S/$@ --trace --no-silent -f $(SRCDIR)/$@/Makefile -C $(CURDIR)/$@ all
 
 .PHONY: clean
 clean: _postclean

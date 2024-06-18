@@ -2455,15 +2455,12 @@ enum ice_status ice_update_link_info(struct ice_port_info *pi)
 	struct ice_aqc_get_phy_caps_data *pcaps;
 	struct ice_phy_info *phy_info;
 	enum ice_status status;
-	struct ice_hw *hw;
 
 	if (!pi)
 		return ICE_ERR_PARAM;
 
-	hw = pi->hw;
-
 	pcaps = (struct ice_aqc_get_phy_caps_data *)
-		ice_malloc(hw, sizeof(*pcaps));
+		ice_malloc(pi->hw, sizeof(*pcaps));
 	if (!pcaps)
 		return ICE_ERR_NO_MEMORY;
 
@@ -2483,7 +2480,7 @@ enum ice_status ice_update_link_info(struct ice_port_info *pi)
 			   ICE_NONDMA_TO_NONDMA);
 	}
 out:
-	ice_free(hw, pcaps);
+	ice_free(pi->hw, pcaps);
 	return status;
 }
 

@@ -4,6 +4,7 @@
 #
 # include rte.vars.mk if config file exists
 #
+
 ifeq (,$(wildcard $(RTE_OUTPUT)/.config))
   $(error "need a make config first")
 else
@@ -11,7 +12,7 @@ else
 endif
 
 # allow exec-env specific targets
--include $(RTE_SDK)/mk/exec-env/$(RTE_EXEC_ENV)/rte.custom.mk
+include $(RTE_SDK)/mk/exec-env/$(RTE_EXEC_ENV)/rte.vars.mk
 
 buildtools: | lib
 kernel: | lib
@@ -27,7 +28,7 @@ CLEANDIRS = $(addsuffix _clean,$(ROOTDIRS-y) $(ROOTDIRS-n) $(ROOTDIRS-))
 
 .PHONY: build
 build: $(ROOTDIRS-y)
-	@echo "Build complete [$(RTE_TARGET)]"
+	echo "Build complete [$(RTE_TARGET)]"
 
 .PHONY: clean
 clean: $(CLEANDIRS)
@@ -38,16 +39,14 @@ clean: $(CLEANDIRS)
 	@$(RTE_SDK)/buildtools/gen-config-h.sh $(RTE_OUTPUT)/.config \
 		> $(RTE_OUTPUT)/include/rte_config.h
 	$(Q)$(MAKE) -f $(RTE_SDK)/GNUmakefile gcovclean
-	@echo Clean complete
 
 .SECONDEXPANSION:
 .PHONY: $(ROOTDIRS-y) $(ROOTDIRS-)
 $(ROOTDIRS-y) $(ROOTDIRS-):
 	@[ -d $(BUILDDIR)/$@ ] || mkdir -p $(BUILDDIR)/$@
-	@echo "== Build $@"
-	$(Q)$(MAKE) S=$@ -f $(RTE_SRCDIR)/$@/Makefile -C $(BUILDDIR)/$@ all
+	$(MAKE) S=$@ --trace --no-silent -f $(RTE_SRCDIR)/$@/Makefile -C $(BUILDDIR)/$@ all
 	@if [ $@ = drivers ]; then \
-		$(MAKE) -f $(RTE_SDK)/mk/rte.combinedlib.mk; \
+		$(MAKE) --trace --no-silent -f $(RTE_SDK)/mk/rte.combinedlib.mk -C $(BUILDDIR)/$@ all ; \
 	fi
 
 %_clean:
@@ -59,12 +58,12 @@ $(ROOTDIRS-y) $(ROOTDIRS-):
 RTE_MAKE_SUBTARGET ?= all
 
 %_sub: $(addsuffix _sub,$(*))
-	@echo $(addsuffix _sub,$(*))
+	set -x;
+	echo -n "Found new subtarget: $@ ($(*), $(RTE_MAKE_SUBTARGET))" ;
+	echo $(addsuffix _sub,$(*))
 	@[ -d $(BUILDDIR)/$* ] || mkdir -p $(BUILDDIR)/$*
-	@echo "== Build $*"
-	$(Q)$(MAKE) S=$* -f $(RTE_SRCDIR)/$*/Makefile -C $(BUILDDIR)/$* \
-		$(RTE_MAKE_SUBTARGET)
-
+	$(Q)$(MAKE) S=$* -f $(RTE_SRCDIR)/$*/Makefile -C $(BUILDDIR)/$* $(RTE_MAKE_SUBTARGET)
+	set +x;
 .PHONY: all
 all: build
 

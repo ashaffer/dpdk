@@ -21,6 +21,9 @@
 #define SFC_MCDI_POLL_INTERVAL_MAX_US	(US_PER_S / 10)	/* 100ms in 1us units */
 #define SFC_MCDI_WATCHDOG_INTERVAL_US	(10 * US_PER_S)	/* 10s in 1us units */
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored,"-Wshift-count-overflow")
+
 static void
 sfc_mcdi_timeout(struct sfc_adapter *sa)
 {
@@ -309,3 +312,5 @@ sfc_mcdi_fini(struct sfc_adapter *sa)
 
 	sfc_dma_free(sa, &mcdi->mem);
 }
+
+PRAGMA_POP(diagnostic)

@@ -442,19 +442,20 @@ kni_ioctl_create(struct net *net, uint32_t ioctl_num,
 	if (pci)
 		pci_dev_put(pci);
 #endif
-
-	if (kni->lad_dev)
-		ether_addr_copy(net_dev->dev_addr, kni->lad_dev->dev_addr);
+	if (kni->lad_dev) {
+		// ether_addr_copy(net_dev->dev_addr, kni->lad_dev->dev_addr);
+		eth_hw_addr_set(net_dev, kni->lad_dev->dev_addr);
+	}
 	else {
 		/* if user has provided a valid mac address */
 		if (is_valid_ether_addr(dev_info.mac_addr))
-			memcpy(net_dev->dev_addr, dev_info.mac_addr, ETH_ALEN);
+			eth_hw_addr_set(net_dev, dev_info.mac_addr);
 		else
 			/*
 			 * Generate random mac address. eth_random_addr() is the
 			 * newer version of generating mac address in kernel.
 			 */
-			random_ether_addr(net_dev->dev_addr);
+			eth_random_addr((uint8_t *)net_dev->dev_addr);
 	}
 
 	if (dev_info.mtu)

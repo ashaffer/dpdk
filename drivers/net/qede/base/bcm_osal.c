@@ -133,8 +133,13 @@ void *osal_dma_alloc_coherent(struct ecore_dev *p_dev,
 	if (core_id == (unsigned int)LCORE_ID_ANY)
 		core_id = rte_get_master_lcore();
 	socket_id = rte_lcore_to_socket_id(core_id);
+
+GCC_PRAGMA_PUSH(diagnostic)
+GCC_PRAGMA_SET(diagnostic, ignored, "-Wmaybe-uninitialized")
 	mz = rte_memzone_reserve_aligned(mz_name, size, socket_id,
 			RTE_MEMZONE_IOVA_CONTIG, RTE_CACHE_LINE_SIZE);
+GCC_PRAGMA_POP(diagnostic)
+
 	if (!mz) {
 		DP_ERR(p_dev, "Unable to allocate DMA memory "
 		       "of size %zu bytes - %s\n",

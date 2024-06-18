@@ -613,6 +613,8 @@ spq_allocate_fail:
 	return ECORE_NOMEM;
 }
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 void ecore_spq_free(struct ecore_hwfn *p_hwfn)
 {
 	struct ecore_spq *p_spq = p_hwfn->p_spq;
@@ -642,6 +644,8 @@ void ecore_spq_free(struct ecore_hwfn *p_hwfn)
 
 	OSAL_FREE(p_hwfn->p_dev, p_spq);
 }
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 
 enum _ecore_status_t
 ecore_spq_get_entry(struct ecore_hwfn *p_hwfn, struct ecore_spq_entry **pp_ent)

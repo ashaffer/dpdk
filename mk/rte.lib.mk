@@ -91,6 +91,7 @@ O_TO_S_DO = @set -e; \
 #
 # Archive objects in .a file if needed
 #
+
 ifeq ($(CONFIG_RTE_BUILD_SHARED_LIB),y)
 $(LIB): $(OBJS-y) $(DEP_$(LIB)) FORCE
 ifeq ($(LIBABIVER),)
@@ -110,9 +111,8 @@ endif
 		$(depfile_missing),\
 		$(depfile_newer)),\
 		$(O_TO_S_DO))
-
 else
-$(LIB): $(OBJS-y) $(DEP_$(LIB)) FORCE
+$(LIB): $(OBJS-y) 
 	@[ -d $(dir $@) ] || mkdir -p $(dir $@)
 	$(if $(D),\
 	    @echo -n "$< -> $@ " ; \
@@ -158,3 +158,4 @@ include $(RTE_SDK)/mk/internal/rte.build-post.mk
 
 .PHONY: FORCE
 FORCE:
+	

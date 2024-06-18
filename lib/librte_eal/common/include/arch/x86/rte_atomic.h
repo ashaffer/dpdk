@@ -22,9 +22,7 @@ extern "C" {
 #endif
 
 #define	rte_mb() _mm_mfence()
-
-#define	rte_wmb() _mm_sfence()
-
+#define	rte_wmb() (void)_mm_sfence()
 #define	rte_rmb() _mm_lfence()
 
 #define rte_smp_wmb() rte_compiler_barrier()

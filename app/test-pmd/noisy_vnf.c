@@ -53,6 +53,8 @@ do_write(char *vnf_mem)
 			RTE_CACHE_LINE_SIZE)] = w;
 }
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 static inline void
 do_read(char *vnf_mem)
 {
@@ -63,6 +65,7 @@ do_read(char *vnf_mem)
 			RTE_CACHE_LINE_SIZE)];
 	r++;
 }
+PRAGMA_POP(diagnostic)
 
 static inline void
 do_readwrite(char *vnf_mem)

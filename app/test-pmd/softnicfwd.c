@@ -242,7 +242,7 @@ softport_tm_subport_node_add(portid_t port_id,
 	struct tm_hierarchy *h,
 	struct rte_tm_error *error)
 {
-	uint32_t subport_parent_node_id, subport_node_id = 0;
+	uint32_t subport_parent_node_id;
 	struct rte_tm_node_params snp;
 	struct rte_tm_shaper_params ssp;
 	uint32_t priority, weight, level_id, shaper_profile_id;
@@ -295,7 +295,6 @@ softport_tm_subport_node_add(portid_t port_id,
 			return -1;
 		}
 		shaper_profile_id++;
-		subport_node_id++;
 	}
 	/* Update */
 	h->n_shapers = shaper_profile_id;

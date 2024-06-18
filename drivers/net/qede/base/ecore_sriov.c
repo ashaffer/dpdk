@@ -2353,11 +2353,12 @@ static void ecore_iov_vf_mbx_start_rxq(struct ecore_hwfn *p_hwfn,
 	/* Legacy VFs have their Producers in a different location, which they
 	 * calculate on their own and clean the producer prior to this.
 	 */
-	if (!(vf_legacy & ECORE_QCID_LEGACY_VF_RX_PROD))
+	if (!(vf_legacy & ECORE_QCID_LEGACY_VF_RX_PROD)) {
 		REG_WR(p_hwfn,
 		       GTT_BAR0_MAP_REG_MSDM_RAM +
 		       MSTORM_ETH_VF_PRODS_OFFSET(vf->abs_vf_id, req->rx_qid),
 		       0);
+	}
 
 	rc = ecore_eth_rxq_start_ramrod(p_hwfn, p_cid,
 					req->bd_max_bytes,

@@ -1332,10 +1332,12 @@ static void elink_ets_e3b0_nig_disabled(const struct elink_params *params,
 	 * bit4   bit3	  bit2   bit1	  bit0
 	 * MCP and debug are strict
 	 */
-	if (port)
+	if (port) {
 		REG_WR(sc, NIG_REG_P1_TX_ARB_CLIENT_IS_STRICT, 0x3f);
-	else
+	}
+	else {
 		REG_WR(sc, NIG_REG_P0_TX_ARB_CLIENT_IS_STRICT, 0x1ff);
+	}
 	/* defines which entries (clients) are subjected to WFQ arbitration */
 	REG_WR(sc, (port) ? NIG_REG_P1_TX_ARB_CLIENT_IS_SUBJECT2WFQ :
 		   NIG_REG_P0_TX_ARB_CLIENT_IS_SUBJECT2WFQ, 0);
@@ -1426,12 +1428,14 @@ static void elink_ets_e3b0_pbf_disabled(const struct elink_params *params)
 		REG_WR(sc, PBF_REG_ETS_ARB_PRIORITY_CLIENT_P0, 0x2C688);
 
 	/* TODO_ETS - Should be done by reset value or init tool */
-	if (port)
+	if (port) {
 		/* 0x688 (|011|0 10|00 1|000)*/
 		REG_WR(sc, PBF_REG_ETS_ARB_CLIENT_CREDIT_MAP_P1, 0x688);
-	else
-	/* 0x2C688 (10 1|100 |011|0 10|00 1|000) */
-	REG_WR(sc, PBF_REG_ETS_ARB_CLIENT_CREDIT_MAP_P0, 0x2C688);
+	}
+	else {
+		/* 0x2C688 (10 1|100 |011|0 10|00 1|000) */
+		REG_WR(sc, PBF_REG_ETS_ARB_CLIENT_CREDIT_MAP_P0, 0x2C688);
+	}
 
 	REG_WR(sc, (port) ? PBF_REG_ETS_ARB_NUM_STRICT_ARB_SLOTS_P1 :
 		   PBF_REG_ETS_ARB_NUM_STRICT_ARB_SLOTS_P0, 0x100);
@@ -1453,8 +1457,9 @@ static void elink_ets_e3b0_pbf_disabled(const struct elink_params *params)
 		max_cos = ELINK_DCBX_E3B0_MAX_NUM_COS_PORT1;
 	}
 
-	for (i = 0; i < max_cos; i++)
+	for (i = 0; i < max_cos; i++) {
 		REG_WR(sc, base_weight + (0x4 * i), 0);
+	}
 
 	elink_ets_e3b0_set_credit_upper_bound_pbf(params, min_w_val_pbf);
 }
@@ -7580,8 +7585,9 @@ static elink_status_t elink_update_link_down(struct elink_params *params,
 	REG_WR(sc, NIG_REG_EGRESS_DRAIN0_MODE + port * 4, 1);
 
 	/* Disable emac */
-	if (!CHIP_IS_E3(sc))
+	if (!CHIP_IS_E3(sc)) {
 		REG_WR(sc, NIG_REG_NIG_EMAC0_EN + port * 4, 0);
+	}
 
 	DELAY(1000 * 10);
 	/* Reset BigMac/Xmac */

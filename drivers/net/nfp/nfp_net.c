@@ -2638,13 +2638,14 @@ nfp_net_rss_hash_conf_get(struct rte_eth_dev *dev,
 
 	/* Reading the key size */
 	rss_conf->rss_key_len = nn_cfg_readl(hw, NFP_NET_CFG_RSS_KEY_SZ);
+	rss_conf->rss_hf = rss_hf;
 
 	/* Reading the key byte a byte */
 	for (i = 0; i < rss_conf->rss_key_len; i++) {
 		key = nn_cfg_readb(hw, NFP_NET_CFG_RSS_KEY + i);
 		memcpy(&rss_conf->rss_key[i], &key, 1);
 	}
-
+	
 	return 0;
 }
 
@@ -3019,7 +3020,7 @@ nfp_cpp_bridge_serve_write(int sockfd, struct nfp_cpp *cpp)
 	off_t offset, nfp_offset;
 	uint32_t cpp_id, pos, len;
 	uint32_t tmpbuf[16];
-	size_t count, curlen, totlen = 0;
+	size_t count, curlen; //, totlen = 0;
 	int err = 0;
 
 	PMD_CPP_LOG(DEBUG, "%s: offset size %lu, count_size: %lu\n", __func__,
@@ -3096,7 +3097,7 @@ nfp_cpp_bridge_serve_write(int sockfd, struct nfp_cpp *cpp)
 		}
 
 		nfp_offset += pos;
-		totlen += pos;
+		// totlen += pos;
 		nfp_cpp_area_release(area);
 		nfp_cpp_area_free(area);
 
@@ -3121,7 +3122,7 @@ nfp_cpp_bridge_serve_read(int sockfd, struct nfp_cpp *cpp)
 	off_t offset, nfp_offset;
 	uint32_t cpp_id, pos, len;
 	uint32_t tmpbuf[16];
-	size_t count, curlen, totlen = 0;
+	size_t count, curlen; //, totlen = 0;
 	int err = 0;
 
 	PMD_CPP_LOG(DEBUG, "%s: offset size %lu, count_size: %lu\n", __func__,
@@ -3197,7 +3198,7 @@ nfp_cpp_bridge_serve_read(int sockfd, struct nfp_cpp *cpp)
 		}
 
 		nfp_offset += pos;
-		totlen += pos;
+		// totlen += pos;
 		nfp_cpp_area_release(area);
 		nfp_cpp_area_free(area);
 

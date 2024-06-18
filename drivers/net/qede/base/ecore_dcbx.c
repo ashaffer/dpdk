@@ -839,6 +839,8 @@ ecore_dcbx_read_dscp_mib(struct ecore_hwfn *p_hwfn, struct ecore_ptt *p_ptt)
 	ecore_memcpy_from(p_hwfn, p_ptt, data.dscp_map, data.addr, data.size);
 }
 
+PRAGMA_PUSH(diagnostic)
+PRAGMA_SET(diagnostic, ignored, "-Wunused-but-set-variable")
 static enum _ecore_status_t ecore_dcbx_read_mib(struct ecore_hwfn *p_hwfn,
 						struct ecore_ptt *p_ptt,
 						enum ecore_mib_read_type type)
@@ -868,6 +870,7 @@ static enum _ecore_status_t ecore_dcbx_read_mib(struct ecore_hwfn *p_hwfn,
 
 	return ECORE_SUCCESS;
 }
+PRAGMA_POP(diagnostic)
 
 /*
  * Read updated MIB.

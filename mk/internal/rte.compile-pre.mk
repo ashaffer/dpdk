@@ -4,7 +4,6 @@
 #
 # Common to rte.lib.mk, rte.app.mk, rte.obj.mk
 #
-
 SRCS-all := $(SRCS-y) $(SRCS-n) $(SRCS-)
 
 # convert source to obj file
@@ -36,7 +35,6 @@ DEPS-n := $(call src2dep,$(SRCS-n))
 DEPS-  := $(call src2dep,$(SRCS-))
 DEPS-all := $(DEPS-y) $(DEPS-n) $(DEPS-)
 DEPSTMP-all := $(DEPS-all:%.d=%.d.tmp)
-
 CMDS-y := $(call src2cmd,$(SRCS-y))
 CMDS-n := $(call src2cmd,$(SRCS-n))
 CMDS-  := $(call src2cmd,$(SRCS-))
@@ -46,13 +44,11 @@ CMDS-all := $(CMDS-y) $(CMDS-n) $(CMDS-)
 
 # command to compile a .c file to generate an object
 ifeq ($(USE_HOST),1)
-C_TO_O = $(HOSTCC) -Wp,-MD,$(call obj2dep,$(@)).tmp $(HOST_CPPFLAGS) $(HOST_CFLAGS) \
-	$(CFLAGS_$(@)) $(HOST_EXTRA_CPPFLAGS) $(HOST_EXTRA_CFLAGS) -o $@ -c $<
+C_TO_O = $(HOSTCC) -Wp,-MD,$(call obj2dep,$(@)).tmp $(HOST_CPPFLAGS) $(HOST_CFLAGS) $(CFLAGS_$(@)) $(HOST_EXTRA_CPPFLAGS) $(HOST_EXTRA_CFLAGS) -o $@ -c $<
 C_TO_O_STR = $(subst ','\'',$(C_TO_O)) #'# fix syntax highlight
 C_TO_O_DISP = $(if $(V),"$(C_TO_O_STR)","  HOSTCC $(@)")
 else
-C_TO_O = $(CC) -Wp,-MD,$(call obj2dep,$(@)).tmp $(CPPFLAGS) $(CFLAGS) \
-	$(CFLAGS_$(@)) $(EXTRA_CPPFLAGS) $(EXTRA_CFLAGS) -o $@ -c $<
+C_TO_O = $(CC) -Wp,-MD,$(call obj2dep,$(@)).tmp $(CPPFLAGS) $(CFLAGS) $(CFLAGS_$(@)) $(EXTRA_CPPFLAGS) $(EXTRA_CFLAGS) -o $@ -c $<
 C_TO_O_STR = $(subst ','\'',$(C_TO_O)) #'# fix syntax highlight
 C_TO_O_DISP = $(if $(V),"$(C_TO_O_STR)","  CC $(@)")
 endif
@@ -109,6 +105,7 @@ boolean = $(if $1,1,0)
 # Note: dep_$$@ is from the .d file and DEP_$$@ can be specified by
 # user (by default it is empty)
 #
+
 .SECONDEXPANSION:
 %.o: %.c $$(wildcard $$(dep_$$@)) $$(DEP_$$(@)) FORCE
 	@[ -d $(dir $@) ] || mkdir -p $(dir $@)
