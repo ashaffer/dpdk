@@ -406,6 +406,7 @@ bucket_alloc(struct rte_mempool *mp)
 				RTE_CACHE_LINE_SIZE, mp->socket_id);
 	if (bd == NULL) {
 		rc = -ENOMEM;
+		printf("bucket_alloc: rte_zmalloc_bucket failed ENOMEM\n");
 		goto no_mem_for_data;
 	}
 	bd->pool = mp;
@@ -457,6 +458,7 @@ bucket_alloc(struct rte_mempool *mp)
 		      RTE_MEMPOOL_MZ_FORMAT ".0", mp->name);
 	if (rc < 0 || rc >= (int)sizeof(rg_name)) {
 		rc = -ENAMETOOLONG;
+		printf("bucket_alloc: rg_name 1 too long\n");
 		goto invalid_shared_orphan_ring;
 	}
 	bd->shared_orphan_ring =
@@ -464,12 +466,14 @@ bucket_alloc(struct rte_mempool *mp)
 				mp->socket_id, rg_flags);
 	if (bd->shared_orphan_ring == NULL) {
 		rc = -rte_errno;
+		printf("bucket_alloc: rte_shared_create shared_orphan_ring == NULL, %d\n", rc);
 		goto cannot_create_shared_orphan_ring;
 	}
 
 	rc = snprintf(rg_name, sizeof(rg_name),
 		       RTE_MEMPOOL_MZ_FORMAT ".1", mp->name);
 	if (rc < 0 || rc >= (int)sizeof(rg_name)) {
+		printf("bucket_alloc: rg_name 2 too long\n");
 		rc = -ENAMETOOLONG;
 		goto invalid_shared_bucket_ring;
 	}
@@ -480,6 +484,7 @@ bucket_alloc(struct rte_mempool *mp)
 				mp->socket_id, rg_flags);
 	if (bd->shared_bucket_ring == NULL) {
 		rc = -rte_errno;
+		printf("bucket_alloc: rte_ring_create bp->shared_bucket_ring == NULL, %d\n", rc);
 		goto cannot_create_shared_bucket_ring;
 	}
 

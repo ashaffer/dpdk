@@ -285,8 +285,10 @@ mempool_ops_alloc_once(struct rte_mempool *mp)
 	/* create the internal ring if not already done */
 	if ((mp->flags & MEMPOOL_F_POOL_CREATED) == 0) {
 		ret = rte_mempool_ops_alloc(mp);
-		if (ret != 0)
+		if (ret != 0) {
+			printf("mempool_ops_alloc_once: rte_mempool_ops_alloc failed, %d\n", ret);
 			return ret;
+		}
 		mp->flags |= MEMPOOL_F_POOL_CREATED;
 	}
 	return 0;
@@ -307,16 +309,22 @@ rte_mempool_populate_iova(struct rte_mempool *mp, char *vaddr,
 	int ret;
 
 	ret = mempool_ops_alloc_once(mp);
-	if (ret != 0)
+	if (ret != 0) {
+		printf("mempool_ops_alloc_once failed: %d\n", ret);
 		return ret;
+	}
 
 	/* mempool is already populated */
-	if (mp->populated_size >= mp->size)
+	if (mp->populated_size >= mp->size) {
+		printf("rte_mempool_populate_iova: populated_size >= mp->size, ENOSPC\n");
 		return -ENOSPC;
+	}
 
 	memhdr = rte_zmalloc("MEMPOOL_MEMHDR", sizeof(*memhdr), 0);
-	if (memhdr == NULL)
+	if (memhdr == NULL) {
+		printf("rte_zmalloc failed ENOMEM");
 		return -ENOMEM;
+	}
 
 	memhdr->mp = mp;
 	memhdr->addr = vaddr;
@@ -332,6 +340,7 @@ rte_mempool_populate_iova(struct rte_mempool *mp, char *vaddr,
 
 	if (off > len) {
 		ret = -EINVAL;
+		printf("rte_mempool_populate_iova: off > len, EINVAL\n");
 		goto fail;
 	}
 
@@ -342,6 +351,7 @@ rte_mempool_populate_iova(struct rte_mempool *mp, char *vaddr,
 
 	/* not enough room to store one object */
 	if (i == 0) {
+		printf("rte_mempool_populate_iova: not enough room to store one object EINVAL\n");
 		ret = -EINVAL;
 		goto fail;
 	}
