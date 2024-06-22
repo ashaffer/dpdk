@@ -414,8 +414,10 @@ rte_mempool_populate_virt(struct rte_mempool *mp, char *addr,
 
 		ret = rte_mempool_populate_iova(mp, addr + off, iova,
 			phys_len, free_cb, opaque);
-		if (ret < 0)
+		if (ret < 0) {
+			printf("rte_mempool_populate_iova fail: %d\n", ret);
 			goto fail;
+		}
 		/* no need to call the free callback for next chunks */
 		free_cb = NULL;
 		cnt += ret;
@@ -424,6 +426,7 @@ rte_mempool_populate_virt(struct rte_mempool *mp, char *addr,
 	return cnt;
 
  fail:
+ 	printf("rte_mempool_populate_iova fail: %d, 0x%x\n", ret, ret);
 	rte_mempool_free_memchunks(mp);
 	return ret;
 }
