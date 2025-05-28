@@ -1311,8 +1311,11 @@ rxa_create_intr_thread(struct rte_event_eth_rx_adapter *rx_adapter)
 
 	rte_spinlock_init(&rx_adapter->intr_ring_lock);
 
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wformat-truncation" 
 	snprintf(thread_name, RTE_MAX_THREAD_NAME_LEN,
 			"rx-intr-thread-%d", rx_adapter->id);
+	#pragma GCC diagnostic pop
 
 	err = rte_ctrl_thread_create(&rx_adapter->rx_intr_thread, thread_name,
 				NULL, rxa_intr_thread, rx_adapter);
