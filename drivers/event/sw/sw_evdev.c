@@ -257,7 +257,11 @@ qid_init(struct sw_evdev *sw, unsigned int idx, int type,
 			goto cleanup;
 		}
 
+		#pragma GCC diagnostic push
+		#pragma GCC diagnostic ignored "-Wformat-truncation" 
 		snprintf(buf, sizeof(buf), "sw%d_iq_%d_rob", dev_id, i);
+		#pragma GCC diagnostic pop
+		
 		qid->reorder_buffer = rte_zmalloc_socket(buf,
 				window_size * sizeof(qid->reorder_buffer[0]),
 				0, socket_id);
