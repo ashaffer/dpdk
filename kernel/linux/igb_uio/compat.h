@@ -12,7 +12,13 @@
 #define pci_cfg_access_unlock pci_unblock_user_cfg_access
 #endif
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 18, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0)
+#define HAVE_PCI_MSI_MASK_IRQ 1
+#endif
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)
+#define HAVE_IRQ_DATA 1
+#endif
 #define HAVE_PTE_MASK_PAGE_IOMAP
 #endif
 
@@ -22,18 +28,13 @@
 #define PCI_MSIX_ENTRY_CTRL_MASKBIT    1
 #endif
 
-/*
- * for kernels < 2.6.38 and backported patch that moves MSI-X entry definition
- * to pci_regs.h Those kernels has PCI_MSIX_ENTRY_SIZE defined but not
- * PCI_MSIX_ENTRY_CTRL_MASKBIT
- */
-#ifndef PCI_MSIX_ENTRY_CTRL_MASKBIT
-#define PCI_MSIX_ENTRY_CTRL_MASKBIT    1
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0)
+#define HAVE_PCI_MSI_MASK_IRQ 1
 #endif
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 34) && \
-	(!(defined(RHEL_RELEASE_CODE) && \
-	 RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(5, 9)))
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)
+#define HAVE_IRQ_DATA 1
+#endif
 
 static int pci_num_vf(struct pci_dev *dev)
 {
