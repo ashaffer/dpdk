@@ -14,7 +14,7 @@ MODULE = rte_kni
 MODULE_CFLAGS += -I$(SRCDIR) --param max-inline-insns-single=50
 MODULE_CFLAGS += -I$(RTE_OUTPUT)/include -I$(SRCDIR)/ethtool/ixgbe -I$(SRCDIR)/ethtool/igb
 MODULE_CFLAGS += -include $(RTE_OUTPUT)/include/rte_config.h
-MODULE_CFLAGS += -Wall -Werror -Wno-unused-command-line-argument
+MODULE_CFLAGS += -Wall -Werror -Wno-unused-command-line-argument -Wno-frame-address
 
 -include /etc/lsb-release
 
