@@ -21,6 +21,7 @@ doc/guides/eventdevs/overview_rx_adptr_feature_table.txt
 doc/guides/eventdevs/overview_tx_adptr_feature_table.txt
 doc/guides/eventdevs/overview_crypto_adptr_feature_table.txt
 doc/guides/eventdevs/overview_timer_adptr_feature_table.txt
+x86_64-native-linuxapp-clang
 
 # ignore generated ctags/cscope files
 cscope.out.po
