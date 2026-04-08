@@ -31,7 +31,7 @@ CFLAGS_rte_mempool_octeontx.o += -O3 -ffast-math
 endif
 
 else
-CFLAGS_rte_mempool_octeontx.o += -Ofast
+CFLAGS_rte_mempool_octeontx.o += -O3 -ffast-math
 endif
 
 LDLIBS += -lrte_eal -lrte_mempool -lrte_ring -lrte_mbuf

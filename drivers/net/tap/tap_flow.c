@@ -258,8 +258,8 @@ static const struct tap_flow_items tap_flow_items[] = {
 			RTE_FLOW_ITEM_TYPE_IPV4,
 			RTE_FLOW_ITEM_TYPE_IPV6),
 		.mask = &(const struct rte_flow_item_eth){
-			.dst.addr_bytes = "\xff\xff\xff\xff\xff\xff",
-			.src.addr_bytes = "\xff\xff\xff\xff\xff\xff",
+			.dst.addr_bytes = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
+			.src.addr_bytes = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
 			.type = -1,
 		},
 		.mask_sz = sizeof(struct rte_flow_item_eth),
@@ -302,12 +302,12 @@ static const struct tap_flow_items tap_flow_items[] = {
 		.mask = &(const struct rte_flow_item_ipv6){
 			.hdr = {
 				.src_addr = {
-					"\xff\xff\xff\xff\xff\xff\xff\xff"
-					"\xff\xff\xff\xff\xff\xff\xff\xff",
+					0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+					0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 				},
 				.dst_addr = {
-					"\xff\xff\xff\xff\xff\xff\xff\xff"
-					"\xff\xff\xff\xff\xff\xff\xff\xff",
+					0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+					0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 				},
 				.proto = -1,
 			},
@@ -391,7 +391,7 @@ static struct remote_rule implicit_rte_flows[TAP_REMOTE_MAX_IDX] = {
 		.items[0] = {
 			.type = RTE_FLOW_ITEM_TYPE_ETH,
 			.mask =  &(const struct rte_flow_item_eth){
-				.dst.addr_bytes = "\xff\xff\xff\xff\xff\xff",
+				.dst.addr_bytes = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
 			},
 		},
 		.items[1] = {
@@ -408,10 +408,10 @@ static struct remote_rule implicit_rte_flows[TAP_REMOTE_MAX_IDX] = {
 		.items[0] = {
 			.type = RTE_FLOW_ITEM_TYPE_ETH,
 			.mask =  &(const struct rte_flow_item_eth){
-				.dst.addr_bytes = "\xff\xff\xff\xff\xff\xff",
+				.dst.addr_bytes = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
 			},
 			.spec = &(const struct rte_flow_item_eth){
-				.dst.addr_bytes = "\xff\xff\xff\xff\xff\xff",
+				.dst.addr_bytes = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
 			},
 		},
 		.items[1] = {
@@ -428,10 +428,10 @@ static struct remote_rule implicit_rte_flows[TAP_REMOTE_MAX_IDX] = {
 		.items[0] = {
 			.type = RTE_FLOW_ITEM_TYPE_ETH,
 			.mask =  &(const struct rte_flow_item_eth){
-				.dst.addr_bytes = "\x33\x33\x00\x00\x00\x00",
+				.dst.addr_bytes = {0x33, 0x33, 0x00, 0x00, 0x00, 0x00},
 			},
 			.spec = &(const struct rte_flow_item_eth){
-				.dst.addr_bytes = "\x33\x33\x00\x00\x00\x00",
+				.dst.addr_bytes = {0x33, 0x33, 0x00, 0x00, 0x00, 0x00},
 			},
 		},
 		.items[1] = {

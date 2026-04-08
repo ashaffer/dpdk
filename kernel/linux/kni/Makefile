@@ -30,6 +30,11 @@ endif
 #
 SRCS-y := kni_misc.c
 SRCS-y += kni_net.c
+HDRS-y += kni_dev.h
+HDRS-y += kni_fifo.h
+HDRS-y += rte_kni_common.h
+HDRS-y += rte_config.h
+HDRS-y += compat.h
 SRCS-$(CONFIG_RTE_KNI_KMOD_ETHTOOL) += kni_ethtool.c
 
 SRCS-$(CONFIG_RTE_KNI_KMOD_ETHTOOL) += ethtool/ixgbe/ixgbe_main.c
@@ -54,5 +59,10 @@ SRCS-$(CONFIG_RTE_KNI_KMOD_ETHTOOL) += ethtool/igb/igb_ethtool.c
 SRCS-$(CONFIG_RTE_KNI_KMOD_ETHTOOL) += ethtool/igb/igb_main.c
 SRCS-$(CONFIG_RTE_KNI_KMOD_ETHTOOL) += ethtool/igb/igb_param.c
 SRCS-$(CONFIG_RTE_KNI_KMOD_ETHTOOL) += ethtool/igb/igb_vmdq.c
+
+EXTRA_CFLAGS += -I$(SRCDIR)
+EXTRA_CFLAGS += -I$(RTE_OUTPUT)/include
+EXTRA_CFLAGS += -I$(RTE_SDK)/lib/librte_eal/linux/eal/include
+EXTRA_CFLAGS += -include $(RTE_OUTPUT)/include/rte_config.h
 
 include $(RTE_SDK)/mk/rte.module.mk

@@ -25,6 +25,8 @@ _INSTALL = $(INSTALL-FILES-y) $(SYMLINK-FILES-y) \
 _CLEAN = doclean
 
 SRCS_LINKS = $(addsuffix _link,$(SRCS-y))
+HDRS_LINKS = $(addsuffix _link,$(HDRS-y))
+ALL_LINKS = $(SRCS_LINKS) $(HDRS_LINKS)
 
 compare = $(strip $(subst $(1),,$(2)) $(subst $(2),,$(1)))
 
@@ -46,7 +48,7 @@ build: _postbuild
 	@if [ ! -f $(notdir $(*)) ]; then ln -nfs $(SRCDIR)/$(*) . ; fi)
 
 # build module
-$(MODULE).ko: $(SRCS_LINKS)
+$(MODULE).ko: $(ALL_LINKS)
 	@if [ ! -f $(notdir Makefile) ]; then ln -nfs $(SRCDIR)/Makefile . ; fi
 	@$(MAKE) -C $(RTE_KERNELDIR) M=$(CURDIR) O=$(RTE_KERNELDIR) \
 		CC="$(KERNELCC)" CROSS_COMPILE=$(CROSS) V=$(if $V,1,0)
@@ -60,16 +62,38 @@ $(RTE_OUTPUT)/kmod/$(MODULE).ko: $(MODULE).ko
 # install module
 modules_install:
 	@$(MAKE) -C $(RTE_KERNELDIR) M=$(CURDIR) O=$(RTE_KERNELDIR) \
+		CC="$(KERNELCC)" CROSS_COMPILE=$(CROSS) V=$(if $V,1,0) \
+		EXTRA_CFLAGS="$(MODULE_CFLAGS) $(EXTRA_CFLAGS)" \
+		KCFLAGS="$(MODULE_CFLAGS) $(EXTRA_CFLAGS)" \
+		KCPPFLAGS="$(MODULE_CFLAGS) $(EXTRA_CFLAGS)"
 		modules_install
+
+# modules_install:
+# 	@$(MAKE) -C $(RTE_KERNELDIR) M=$(CURDIR) O=$(RTE_KERNELDIR) \
+# 		modules_install
 
 .PHONY: clean
 clean: _postclean
 
 # do a make clean and remove links
+# .PHONY: doclean
+# doclean:
+# 	@if [ ! -f $(notdir Makefile) ]; then ln -nfs $(SRCDIR)/Makefile . ; fi
+# 	$(Q)$(MAKE) -C $(RTE_KERNELDIR) M=$(CURDIR) O=$(RTE_KERNELDIR) clean
+# 	@$(foreach FILE,$(SRCS-y) $(SRCS-n) $(SRCS-),\
+# 		if [ -h $(notdir $(FILE)) ]; then rm -f $(notdir $(FILE)) ; fi ;)
+# 	@if [ -h $(notdir Makefile) ]; then rm -f $(notdir Makefile) ; fi
+# 	@rm -f $(_BUILD_TARGETS) $(_INSTALL_TARGETS) $(_CLEAN_TARGETS) \
+# 		$(INSTALL-FILES-all)
+
 .PHONY: doclean
 doclean:
 	@if [ ! -f $(notdir Makefile) ]; then ln -nfs $(SRCDIR)/Makefile . ; fi
-	$(Q)$(MAKE) -C $(RTE_KERNELDIR) M=$(CURDIR) O=$(RTE_KERNELDIR) clean
+	@$(MAKE) -C $(RTE_KERNELDIR) M=$(CURDIR) O=$(RTE_KERNELDIR) \
+		CC="$(KERNELCC)" CROSS_COMPILE=$(CROSS) V=$(if $V,1,0) \
+		EXTRA_CFLAGS="$(MODULE_CFLAGS) $(EXTRA_CFLAGS)" \
+		KCFLAGS="$(MODULE_CFLAGS) $(EXTRA_CFLAGS)" \
+		KCPPFLAGS="$(MODULE_CFLAGS) $(EXTRA_CFLAGS)" clean
 	@$(foreach FILE,$(SRCS-y) $(SRCS-n) $(SRCS-),\
 		if [ -h $(notdir $(FILE)) ]; then rm -f $(notdir $(FILE)) ; fi ;)
 	@if [ -h $(notdir Makefile) ]; then rm -f $(notdir Makefile) ; fi

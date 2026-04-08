@@ -41,7 +41,7 @@ CFLAGS_octeontx_rxtx.o += -O3 -ffast-math
 endif
 
 else
-CFLAGS_octeontx_rxtx.o += -O3 -Ofast
+CFLAGS_octeontx_rxtx.o += -O3 -ffast-math
 endif
 
 CFLAGS_octeontx_ethdev.o += -DALLOW_EXPERIMENTAL_API

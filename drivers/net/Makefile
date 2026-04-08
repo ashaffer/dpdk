@@ -8,6 +8,7 @@ ifeq ($(CONFIG_RTE_LIBRTE_THUNDERX_NICVF_PMD),d)
         $(warning thunderx pmd is not supported by old compilers)
 endif
 
+CFLAGS += -Wno-gnu-folding-constant
 DIRS-$(CONFIG_RTE_LIBRTE_PMD_AF_PACKET) += af_packet
 DIRS-$(CONFIG_RTE_LIBRTE_PMD_AF_XDP) += af_xdp
 DIRS-$(CONFIG_RTE_LIBRTE_ARK_PMD) += ark

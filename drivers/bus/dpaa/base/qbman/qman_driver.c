@@ -22,7 +22,7 @@ u16 qm_channel_pme = QMAN_CHANNEL_PME;
 /* Ccsr map address to access ccsrbased register */
 static void *qman_ccsr_map;
 /* The qman clock frequency */
-static u32 qman_clk;
+static u32 qman_clk __attribute__((unused));
 
 static __thread int qmfd = -1;
 static __thread struct qm_portal_config qpcfg;

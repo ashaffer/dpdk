@@ -46,8 +46,8 @@ CFLAGS_timvf_worker.o += -O3 -ffast-math
 endif
 
 else
-CFLAGS_ssovf_worker.o += -Ofast
-CFLAGS_timvf_worker.o += -Ofast
+CFLAGS_ssovf_worker.o += -O3 -ffast-math
+CFLAGS_timvf_worker.o += -O3 -ffast-math
 endif
 
 include $(RTE_SDK)/mk/rte.lib.mk

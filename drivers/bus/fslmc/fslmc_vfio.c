@@ -50,7 +50,7 @@ static struct fslmc_vfio_group vfio_group;
 static struct fslmc_vfio_container vfio_container;
 static int container_device_fd;
 static char *g_container;
-static uint32_t *msi_intr_vaddr;
+static uint32_t *msi_intr_vaddr __attribute__((unused));
 void *(*rte_mcp_ptr_list);
 
 static struct rte_dpaa2_object_list dpaa2_obj_list =

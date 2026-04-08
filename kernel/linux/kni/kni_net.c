@@ -17,11 +17,15 @@
 #include <linux/kthread.h>
 #include <linux/delay.h>
 
-#include <rte_kni_common.h>
-#include <kni_fifo.h>
+#include "rte_config.h"
+#include "rte_kni_common.h"
+#include "kni_fifo.h"
 
 #include "compat.h"
 #include "kni_dev.h"
+
+// #include "compat.h"
+// #include "kni_dev.h"
 
 #define WD_TIMEOUT 5 /*jiffies */
 

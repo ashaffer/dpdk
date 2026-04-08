@@ -38,6 +38,6 @@ SRCS-$(CONFIG_RTE_LIBRTE_THUNDERX_NICVF_PMD) += nicvf_svf.c
 ifeq ($(CONFIG_RTE_TOOLCHAIN_GCC),y)
 CFLAGS_nicvf_rxtx.o += -fno-prefetch-loop-arrays
 endif
-CFLAGS_nicvf_rxtx.o += -Ofast
+CFLAGS_nicvf_rxtx.o += -O3 -ffast-math
 
 include $(RTE_SDK)/mk/rte.lib.mk

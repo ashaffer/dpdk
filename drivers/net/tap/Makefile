@@ -29,6 +29,7 @@ LDLIBS += -lrte_bus_vdev -lrte_gso
 
 CFLAGS += -DTAP_MAX_QUEUES=$(TAP_MAX_QUEUES)
 
+CFLAGS_rte_eth_tap.o += -Wno-gnu-folding-constant
 #
 # all source are stored in SRCS-y
 #

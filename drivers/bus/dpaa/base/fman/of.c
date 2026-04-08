@@ -9,7 +9,7 @@
 #include <rte_string_fns.h>
 #include <rte_dpaa_logs.h>
 
-static int alive;
+static int alive __attribute__((unused));
 static struct dt_dir root_dir;
 static const char *base_dir;
 static COMPAT_LIST_HEAD(linear);

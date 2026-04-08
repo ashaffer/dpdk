@@ -3264,7 +3264,7 @@ parse_vc_action_rss(struct context *ctx, const struct token *token,
 			.key = action_rss_data->key,
 			.queue = action_rss_data->queue,
 		},
-		.key = "testpmd's default RSS hash key, "
+		.key = "testpmd default RSS hash key, "
 			"override it for better balancing",
 		.queue = { 0 },
 	};
