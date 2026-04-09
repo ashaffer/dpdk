@@ -455,7 +455,7 @@ kni_ioctl_create(struct net *net, uint32_t ioctl_num,
 			 * Generate random mac address. eth_random_addr() is the
 			 * newer version of generating mac address in kernel.
 			 */
-			eth_random_addr((uint8_t *)net_dev->dev_addr);
+			eth_hw_addr_random(net_dev);
 	}
 
 	if (dev_info.mtu)

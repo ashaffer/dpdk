@@ -763,11 +763,17 @@ static const struct header_ops kni_net_header_ops = {
 static const struct net_device_ops kni_net_netdev_ops = {
 	.ndo_open = kni_net_open,
 	.ndo_stop = kni_net_release,
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0)
 	.ndo_set_config = kni_net_config,
+#endif
 	.ndo_change_rx_flags = kni_net_set_promiscusity,
 	.ndo_start_xmit = kni_net_tx,
 	.ndo_change_mtu = kni_net_change_mtu,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0)
+	.ndo_eth_ioctl = kni_net_ioctl,
+#else
 	.ndo_do_ioctl = kni_net_ioctl,
+#endif
 	.ndo_set_rx_mode = kni_net_set_rx_mode,
 	.ndo_get_stats = kni_net_stats,
 	.ndo_tx_timeout = kni_net_tx_timeout,
