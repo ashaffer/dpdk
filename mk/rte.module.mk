@@ -28,6 +28,10 @@ SRCS_LINKS = $(addsuffix _link,$(SRCS-y))
 HDRS_LINKS = $(addsuffix _link,$(HDRS-y))
 ALL_LINKS = $(SRCS_LINKS) $(HDRS_LINKS)
 
+# Export MODULE_CFLAGS via environment to avoid shell quoting issues
+# when the value contains special characters (quotes, parens, commas).
+export MODULE_CFLAGS
+
 compare = $(strip $(subst $(1),,$(2)) $(subst $(2),,$(1)))
 
 .PHONY: all
@@ -51,8 +55,7 @@ build: _postbuild
 $(MODULE).ko: $(ALL_LINKS)
 	@if [ ! -f $(notdir Makefile) ]; then ln -nfs $(SRCDIR)/Makefile . ; fi
 	@$(MAKE) -C $(RTE_KERNELDIR) M=$(CURDIR) O=$(RTE_KERNELDIR) \
-		CC="$(KERNELCC)" CROSS_COMPILE=$(CROSS) V=$(if $V,1,0) \
-		MODULE_CFLAGS="$(MODULE_CFLAGS)"
+		CC="$(KERNELCC)" CROSS_COMPILE=$(CROSS) V=$(if $V,1,0)
 
 # install module in $(RTE_OUTPUT)/kmod
 $(RTE_OUTPUT)/kmod/$(MODULE).ko: $(MODULE).ko
