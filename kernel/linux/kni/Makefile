@@ -35,6 +35,22 @@ HDRS-y += kni_fifo.h
 HDRS-y += rte_kni_common.h
 HDRS-y += rte_config.h
 HDRS-y += compat.h
+
+# rte_config.h and rte_kni_common.h are not in SRCDIR (they are generated
+# or live in other parts of the tree). Override the generic %_link pattern
+# rule with explicit rules that point at the correct locations so that
+# #include "rte_config.h" / #include "rte_kni_common.h" in the kernel
+# module sources resolve from the build directory.
+rte_config.h_link: FORCE
+	@if [ ! -f rte_config.h ]; then \
+		ln -nfs $(RTE_OUTPUT)/include/rte_config.h rte_config.h; \
+	fi
+
+rte_kni_common.h_link: FORCE
+	@if [ ! -f rte_kni_common.h ]; then \
+		ln -nfs $(RTE_SDK)/lib/librte_eal/linux/eal/include/rte_kni_common.h rte_kni_common.h; \
+	fi
+
 SRCS-$(CONFIG_RTE_KNI_KMOD_ETHTOOL) += kni_ethtool.c
 
 SRCS-$(CONFIG_RTE_KNI_KMOD_ETHTOOL) += ethtool/ixgbe/ixgbe_main.c
